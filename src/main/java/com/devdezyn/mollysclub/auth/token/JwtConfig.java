@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth.jwt;
+package com.devdezyn.mollysclub.auth.token;
 
 import com.google.common.net.HttpHeaders;
 import io.jsonwebtoken.security.Keys;

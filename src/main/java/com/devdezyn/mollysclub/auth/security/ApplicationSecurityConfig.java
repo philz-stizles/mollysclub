@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] AUTH_WHITELIST = {
             "/api/v*/auth/**",
+            "/h2-console/**",
             // -- Swagger UI v2
             "/v2/api-docs",
             "/swagger-resources",
@@ -46,7 +47,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
                 // .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
                 // .antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMIN.name())
-                .anyRequest().authenticated().and().formLogin();
+                .anyRequest().authenticated().and().formLogin().and().headers().frameOptions().sameOrigin();
     }
     
     @Override

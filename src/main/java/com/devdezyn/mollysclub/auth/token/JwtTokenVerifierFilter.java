@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth.jwt;
+package com.devdezyn.mollysclub.auth.token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

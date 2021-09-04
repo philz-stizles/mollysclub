@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth.jwt;
+package com.devdezyn.mollysclub.auth.token;
 
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;

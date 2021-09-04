@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth.jwt;
+package com.devdezyn.mollysclub.auth.token;
 
 public class UsernameAndPasswordAuthenticationRequest {
     private String username;

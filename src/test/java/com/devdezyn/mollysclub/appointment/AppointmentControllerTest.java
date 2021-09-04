@@ -1,3 +1,4 @@
+package com.devdezyn.mollysclub.appointment;
 // package io.devdezyn.devlearnrest.student;
 
 // import static org.assertj.core.api.Assertions.assertThat;

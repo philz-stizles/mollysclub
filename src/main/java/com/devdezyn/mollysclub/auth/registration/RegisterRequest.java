@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth;
+package com.devdezyn.mollysclub.auth.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

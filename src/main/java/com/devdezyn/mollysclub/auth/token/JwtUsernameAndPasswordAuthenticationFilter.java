@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth.jwt;
+package com.devdezyn.mollysclub.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
