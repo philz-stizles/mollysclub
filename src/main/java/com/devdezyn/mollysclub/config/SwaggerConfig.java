@@ -11,12 +11,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-@EnableSwagger2
-//@Import(BeanValidatorPluginsConfiguration.class)
-// @EnableSwagger2WebMvc
 public class SwaggerConfig implements EnvironmentAware {
     // @Autowired
     private Environment environment;
@@ -30,8 +26,8 @@ public class SwaggerConfig implements EnvironmentAware {
                 .apis(RequestHandlerSelectors.basePackage("com.devdezyn.mollysclub"))
                 .paths(PathSelectors.any())
                 .build()
-                .pathMapping("/")
-                .enable(Boolean.parseBoolean(environment.getProperty("mollysclub.swagger.on")));
+                .pathMapping("/");
+                // .enable(Boolean.parseBoolean(environment.getProperty("mollysclub.swagger.on")));
     }
 
 //    private Predicate<String> postPaths() {
@@ -51,12 +47,12 @@ public class SwaggerConfig implements EnvironmentAware {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Java Starter Kit API")
+                .title("Mollys Club API")
                 .description("A full Java Developer project with robust technology implementations")
-                .termsOfServiceUrl("https://devdezyn.io/java-kit/termsOfService")
+                .termsOfServiceUrl("https://devdezyn.io/mollysclub/termsOfService")
                 .contact(new Contact(
                         "Philz Stizles",
-                        "https://devdezyn.com/java-kit",
+                        "https://devdezyn.com/mollysclub",
                         "philz.stizles@devdezyn.com"
                 )).license("JavaInUse License")
                 .licenseUrl("javainuse@gmail.com")
