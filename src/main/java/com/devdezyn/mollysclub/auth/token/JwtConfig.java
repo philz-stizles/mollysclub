@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.crypto.SecretKey;
 
 @Configuration
-@ConfigurationProperties(prefix = "mollysclub.jwt")
+@ConfigurationProperties(prefix = "app.jwt")
 public class JwtConfig{
     private String secretKey;
     private Integer tokenExpirationAfterDays; // 15 mins

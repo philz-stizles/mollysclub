@@ -1,14 +1,14 @@
 package com.devdezyn.mollysclub.address;
 
-import javax.persistence.Entity;
-
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class AddressDTO {
+public class AddressDto {
   private Long id;
   
+  private String zip;
   private String street;
   private String city;
+  private String state;
   private String country;
 }

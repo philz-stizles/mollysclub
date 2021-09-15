@@ -3,10 +3,10 @@ package com.devdezyn.mollysclub.appointment;
 import java.util.List;
 
 public interface AppointmentService {
-  List<AppointmentDTO> getAll();
-  AppointmentDTO getById(Long ownerId);
-  AppointmentDTO create(Long creatorId, AppointmentDTO addressDTO);
+  List<AppointmentDto> getAll();
+  AppointmentDto getById(Long ownerId);
+  AppointmentDto create(Long creatorId, AppointmentDto addressDTO);
 
-  AppointmentDTO updateByCreator(Long creatorId, Long appointmentId, AppointmentDTO addressDTO);
-  AppointmentDTO cancel(Long creatorId, Long appointmentId);
+  AppointmentDto updateByCreator(Long creatorId, Long appointmentId, AppointmentDto addressDTO);
+  AppointmentDto cancel(Long creatorId, Long appointmentId);
 }

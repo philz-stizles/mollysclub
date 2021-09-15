@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 
@@ -27,6 +28,13 @@ public class AppUserService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     return appUserRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+  }
+
+  @Transactional
+  public UserDetails loadUserById(Long id) {
+      return appUserRepository.findById(id).orElseThrow(
+          () -> new UsernameNotFoundException("User not found with id : " + id)
+      );
   }
   
   public String registerUser(AppUser appUser) {

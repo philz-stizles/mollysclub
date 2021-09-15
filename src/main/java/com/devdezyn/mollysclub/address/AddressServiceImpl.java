@@ -1,6 +1,7 @@
 package com.devdezyn.mollysclub.address;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,44 +9,48 @@ import org.springframework.stereotype.Service;
 @Service
 public class AddressServiceImpl implements AddressService {
   private final AddressDAO addressDAO;
+  private final AddressMapper addressMapper;
   
   @Autowired
-  public AddressServiceImpl(AddressDAO addressDAO) {
+  public AddressServiceImpl(AddressDAO addressDAO, AddressMapper addressMapper) {
     this.addressDAO = addressDAO;
+    this.addressMapper = addressMapper;
   }
 
   @Override
-  public List<AddressDTO> findAll() {
+  public List<AddressDto> findAll() {
+    return addressDAO.findAll()
+      .stream()
+      .map(a -> addressMapper.toDto(a))
+      .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<AddressDto> findManyByOwner(Long ownerId) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<AddressDTO> findManyByOwner(Long ownerId) {
+  public AddressDto createByOwner(AddressDto addressDTO) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AddressDTO createByOwner(AddressDTO addressDTO) {
+  public AddressDto updateByOwner(Long ownerId, Long addressId, AddressDto addressDTO) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AddressDTO updateByOwner(Long ownerId, Long addressId, AddressDTO addressDTO) {
+  public AddressDto deleteOneByOwner(Long ownerId, Long addressId) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AddressDTO deleteOneByOwner(Long ownerId, Long addressId) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public AddressDTO deleteManyByOwner(Long ownerId, List<Long> addressIds) {
+  public AddressDto deleteManyByOwner(Long ownerId, List<Long> addressIds) {
     // TODO Auto-generated method stub
     return null;
   }

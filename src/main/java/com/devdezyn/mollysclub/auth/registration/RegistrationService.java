@@ -35,8 +35,8 @@ public class RegistrationService {
         request.getPassword(), AppUserRole.PATIENT));
 
     // Send email notification
-    String link = "http://localhost:8080/api/v1/auth/confirmEmail?token=" + token;
-    emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+    // String link = "http://localhost:8080/api/v1/auth/confirmEmail?token=" + token;
+    // emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
     return token;
   }

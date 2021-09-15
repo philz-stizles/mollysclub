@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
@@ -21,11 +22,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JwtTokenVerifierFilter extends OncePerRequestFilter {
+@Component
+public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
 
-    public JwtTokenVerifierFilter(JwtConfig jwtConfig, SecretKey secretKey) {
+    public JwtTokenFilter(JwtConfig jwtConfig, SecretKey secretKey) {
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
     }

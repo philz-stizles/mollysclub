@@ -2,8 +2,8 @@
 
 // import org.springframework.web.bind.annotation.RestController;
 
-// import com.devdezyn.mollysclub.api.dtos.PatientDto;
-// import com.devdezyn.mollysclub.services.patient.PatientService;
+// import com.devdezyn.mollysclub.api.dtos.GymnDto;
+// import com.devdezyn.mollysclub.services.gymn.GymnService;
 
 // import io.swagger.annotations.*;
 
@@ -21,13 +21,13 @@
 // import org.springframework.web.bind.annotation.RequestMapping;
 
 // @RestController
-// @RequestMapping(path="/api/patients")
+// @RequestMapping(path="/api/gymns")
 // public class GymnController {
-//   private PatientService patientService;
+//   private GymnService gymnService;
   
 //   @Autowired
-//   public GymnController(PatientService patientService) {
-//     this.patientService = patientService;
+//   public GymnController(GymnService gymnService) {
+//     this.gymnService = gymnService;
 //   }
   
 
@@ -40,30 +40,30 @@
 //           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
 //           @ApiResponse(code = 500, message = "Internal server error")
 //   })
-//   public ResponseEntity<List<PatientDto>> getPatients() {
+//   public ResponseEntity<List<GymnDto>> getGymns() {
 
-//     return new ResponseEntity<List<PatientDto>>(patientService.findAll(), HttpStatus.OK);
+//     return new ResponseEntity<List<GymnDto>>(gymnService.findAll(), HttpStatus.OK);
 //   }
 
 //   @GetMapping(path="{id}")
-//   public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
-//     PatientDto patientDto = patientService.findById(id);
+//   public ResponseEntity<GymnDto> getGymn(@PathVariable Long id) {
+//     GymnDto gymnDto = gymnService.findById(id);
     
-//     return new ResponseEntity<PatientDto>(patientDto, HttpStatus.OK);
+//     return new ResponseEntity<GymnDto>(gymnDto, HttpStatus.OK);
 //   }
   
 //   @PostMapping
-//   public String createPatient(@RequestBody PatientDto categoryDTO) {
-//     return "Patient is saved successfully";
+//   public String createGymn(@RequestBody GymnDto gymnDto) {
+//     return "Gymn is saved successfully";
 //   }
   
 //   @PutMapping(path="{id}")
-//   public String updatePatient(@PathVariable Long id, @RequestBody PatientDto categoryDTO) {
-//     return "Patient is saved successfully";
+//   public String updateGymn(@PathVariable Long id, @RequestBody GymnDto gymnDto) {
+//     return "Gymn is saved successfully";
 //   }
   
 //   @DeleteMapping(path="{id}")
-//   public String deletePatient(@PathVariable Long id) {
-//       return "Patient is saved successfully";
+//   public String deleteGymn(@PathVariable Long id) {
+//       return "Gymn is saved successfully";
 //   }
 // }

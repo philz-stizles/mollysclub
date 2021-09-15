@@ -5,15 +5,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AuthJwtConfig {
-    @Value("${mollysclub.jwt.tokenExpirationAfterMins}")
+    @Value("${app.jwt.tokenExpirationAfterMins}")
     Number tokenExpirationAfterMins;
 
-    @Value("${mollysclub.jwt.tokenPrefix}")
+    @Value("${app.jwt.tokenPrefix}")
     String tokenPrefix;
 
-    @Value("${mollysclub.jwt.headerString}")
+    @Value("${app.jwt.headerString}")
     String headerString;
 
-    @Value("${mollysclub.jwt.signupUrl}")
+    @Value("${app.jwt.signupUrl}")
     String signupUrl;
 }

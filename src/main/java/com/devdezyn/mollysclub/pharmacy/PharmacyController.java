@@ -1,28 +1,21 @@
-// package com.devdezyn.mollysclub.api.controller;
+package com.devdezyn.mollysclub.pharmacy;
 
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;
 
-// import com.devdezyn.mollysclub.api.dtos.PatientDto;
-// import com.devdezyn.mollysclub.services.patient.PatientService;
 
-// import io.swagger.annotations.*;
+import io.swagger.annotations.*;
 
-// import java.util.List;
+import java.util.List;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-// @RestController
-// @RequestMapping(path="/api/patients")
-// public class PharmacyController {
+@Api(tags = "Pharmacy")
+@RestController
+@RequestMapping(path="/api/pharmacies")
+public class PharmacyController {
 //   private PatientService patientService;
   
 //   @Autowired
@@ -66,4 +59,4 @@
 //   public String deletePatient(@PathVariable Long id) {
 //       return "Patient is saved successfully";
 //   }
-// }
+}
