@@ -14,7 +14,7 @@
 	<name>mollysclub</name>
 	<description>Health service platform</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<!-- <springfox-swagger.version>3.0.0</springfox-swagger.version> -->
