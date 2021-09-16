@@ -4,50 +4,71 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
+import java.security.Key;
 import java.util.Date;
+import java.util.stream.Collectors;
 
-import com.devdezyn.mollysclub.auth.AppUser;
-
+@Slf4j
 @Component
-public class JwtTokenProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
-
+public class JwtTokenProvider implements Serializable {
     @Value("${app.jwt.secretKey}")
     private String jwtSecret;
 
     @Value("${app.jwt.tokenExpirationAfterMins}")
     private int jwtExpirationInMs;
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, String issuer) {
 
-        AppUser appUser = (AppUser) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
+        var roles = user.getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date issuedAt = new Date();
+        log.info(String.valueOf(jwtExpirationInMs));
+        Date expiryDate = new Date(issuedAt.getTime() + (10 * 60 * 1000)); // jwtExpirationInMs);
+        // Date expiryDate = new Date(System.currentTimeMillis() + (10 * 60 * 1000))
 
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
         return Jwts.builder()
-                .setSubject(Long.toString(appUser.getId()))
-                .setIssuedAt(new Date())
+                .setSubject(user.getUsername())
+                // .setSubject(Long.toString(user.getId()))
+                .claim("roles", roles)
+                .setIssuer(issuer)
+                .setIssuedAt(issuedAt)
                 .setExpiration(expiryDate)
-                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .signWith(key)
                 .compact();
     }
 
     public Long getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody();
+
+        return Long.parseLong(claims.getSubject());
+    }
+    
+    public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecret).build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
     }
 
     public boolean validateToken(String authToken) {
@@ -59,15 +80,15 @@ public class JwtTokenProvider {
                 
             return true;
         } catch (SecurityException ex) {
-            logger.error("Invalid JWT signature");
+            log.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+            log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+            log.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+            log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty.");
         }
         return false;
     }

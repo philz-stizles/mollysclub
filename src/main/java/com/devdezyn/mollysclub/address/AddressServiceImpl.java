@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AddressServiceImpl implements AddressService {
-  private final AddressDAO addressDAO;
+  private final AddressRepository addressDAO;
   private final AddressMapper addressMapper;
   
   @Autowired
-  public AddressServiceImpl(AddressDAO addressDAO, AddressMapper addressMapper) {
+  public AddressServiceImpl(AddressRepository addressDAO, AddressMapper addressMapper) {
     this.addressDAO = addressDAO;
     this.addressMapper = addressMapper;
   }

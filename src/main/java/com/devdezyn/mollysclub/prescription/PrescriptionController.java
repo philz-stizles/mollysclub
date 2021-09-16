@@ -1,66 +1,57 @@
-// package com.devdezyn.mollysclub.prescription;
+package com.devdezyn.mollysclub.prescription;
 
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;
 
-// import io.swagger.annotations.*;
+import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
 
-// import java.util.List;
+import java.util.List;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-// @RestController
-// @RequestMapping(path="/api/patients")
-// public class PrescriptionController {
-//   private PatientService patientService;
-  
-//   @Autowired
-//   public PrescriptionController(PatientService patientService) {
-//     this.patientService = patientService;
-//   }
-  
+@Api(tags = "Prescriptions")
+@RestController
+@RequestMapping(path = "/api/prescriptions")
+@RequiredArgsConstructor
+public class PrescriptionController {
+  private PrescriptionService prescriptionService;
 
-//   @GetMapping
-//   @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
-//   @ApiResponses(value = {
-//           @ApiResponse(code = 200, message = "Successfully retrieved list"),
-//           @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-//           @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-//           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
-//           @ApiResponse(code = 500, message = "Internal server error")
-//   })
-//   public ResponseEntity<List<PatientDto>> getPatients() {
+  @GetMapping
+  @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list"),
+          @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+          @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+          @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+          @ApiResponse(code = 500, message = "Internal server error")
+  })
+  public ResponseEntity<List<PrescriptionDto>> getPrescriptions() {
 
-//     return new ResponseEntity<List<PatientDto>>(patientService.findAll(), HttpStatus.OK);
-//   }
+    return new ResponseEntity<List<PrescriptionDto>>(prescriptionService.getPrescriptions(), HttpStatus.OK);
+  }
 
-//   @GetMapping(path="{id}")
-//   public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
-//     PatientDto patientDto = patientService.findById(id);
+  // @GetMapping(path="{id}")
+  // public ResponseEntity<PrescriptionDto> getPrescription(@PathVariable Long id) {
+  //   PrescriptionDto prescriptionDto = prescriptionService.getPrescriptions();
     
-//     return new ResponseEntity<PatientDto>(patientDto, HttpStatus.OK);
-//   }
+  //   return new ResponseEntity<PrescriptionDto>(prescriptionDto, HttpStatus.OK);
+  // }
   
-//   @PostMapping
-//   public String createPatient(@RequestBody PatientDto categoryDTO) {
-//     return "Patient is saved successfully";
-//   }
+  // @PostMapping
+  // public String createPrescription(@RequestBody PrescriptionDto categoryDTO) {
+  //   return "Prescription is saved successfully";
+  // }
   
-//   @PutMapping(path="{id}")
-//   public String updatePatient(@PathVariable Long id, @RequestBody PatientDto categoryDTO) {
-//     return "Patient is saved successfully";
-//   }
+  // @PutMapping(path="{id}")
+  // public String updatePrescription(@PathVariable Long id, @RequestBody PrescriptionDto categoryDTO) {
+  //   return "Prescription is saved successfully";
+  // }
   
-//   @DeleteMapping(path="{id}")
-//   public String deletePatient(@PathVariable Long id) {
-//       return "Patient is saved successfully";
-//   }
-// }
+  // @DeleteMapping(path="{id}")
+  // public String deletePrescription(@PathVariable Long id) {
+  //     return "Prescription is saved successfully";
+  // }
+}

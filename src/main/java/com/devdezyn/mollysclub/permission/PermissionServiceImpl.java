@@ -1,20 +1,21 @@
 package com.devdezyn.mollysclub.permission;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PermissionServiceImpl implements PermissionService{
     private final PermissionRepository permissionRepository;
+    private final PermissionMapper permissionMapper;
 
-    @Autowired
-    public PermissionServiceImpl(PermissionRepository permissionRepository) {
-        this.permissionRepository = permissionRepository;
-    }
 
-    public List<Permission> getPermissions () {
-        return permissionRepository.findAll();
+    public List<PermissionDto> getPermissions () {
+        return permissionRepository.findAll()
+        .stream().map(p -> permissionMapper.toDto(p)).collect(Collectors.toList());
     }
 }

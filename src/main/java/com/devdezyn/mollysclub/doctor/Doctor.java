@@ -6,8 +6,8 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.devdezyn.mollysclub.address.Address;
-import com.devdezyn.mollysclub.auth.AppUser;
 import com.devdezyn.mollysclub.shared.BaseEntity;
+import com.devdezyn.mollysclub.user.User;
 
 import lombok.Data;
 
@@ -24,5 +24,5 @@ public class Doctor extends BaseEntity{
   private List<Address> addresses = new ArrayList<Address>();
 
   @OneToOne(cascade = CascadeType.ALL)
-  private AppUser account;
+  private User account;
 }

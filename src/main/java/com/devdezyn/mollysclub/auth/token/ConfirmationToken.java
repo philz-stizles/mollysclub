@@ -2,16 +2,9 @@ package com.devdezyn.mollysclub.auth.token;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 
-import com.devdezyn.mollysclub.auth.AppUser;
+import com.devdezyn.mollysclub.user.User;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,9 +40,9 @@ public class ConfirmationToken {
 
   @ManyToOne
   @JoinColumn(nullable = false, name = "app_user_id")
-  private AppUser appUser;
+  private User appUser;
 
-  public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, AppUser appUser) {
+  public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User appUser) {
     this.token = token;
     this.createdAt = createdAt;
     this.expiresAt = expiresAt;

@@ -1,37 +1,38 @@
 package com.devdezyn.mollysclub.auth.security;
 
-import com.devdezyn.mollysclub.auth.AppUserService;
-import com.devdezyn.mollysclub.auth.token.JwtAuthenticationEntryPoint;
-import com.devdezyn.mollysclub.auth.token.JwtAuthenticationFilter;
+import com.devdezyn.mollysclub.auth.token.JwtTokenProvider;
+import com.devdezyn.mollysclub.user.UserService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 
 @Configuration
-@AllArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-    securedEnabled = true,
-    jsr250Enabled = true,
-    prePostEnabled = true
-)
+@RequiredArgsConstructor
+// @EnableGlobalMethodSecurity(
+//     securedEnabled = true,
+//     jsr250Enabled = true,
+//     prePostEnabled = true
+// )
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] AUTH_WHITELIST = {
+        "/login",
+            "/api/v*/users/**",
             "/api/v*/auth/**",
             "/h2-console/**",
             // -- Swagger UI v2
@@ -48,23 +49,32 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             // other public endpoints of your API may be appended to this array
     };
 
-    private final AppUserService appUserService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserDetailsService userDetailsService;
+    private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+//    private final JwtConfig jwtConfig;
+//     private final SecretKey secretKey; 
 
-    private JwtAuthenticationEntryPoint authenticationEntryPoint;
-
-    private final JwtAuthenticationFilter tokenFilter;
-
-    @Override @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // Enable CORS and disable CSRF
-        http = http.cors().and().csrf().disable();
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(
+                this.authenticationManager(), jwtTokenProvider);
+        
+        // Override default login url.
+        customAuthenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
+
+        // Enable CORS
+        http = http.cors().and();
+
+        // disable CSRF
+        http = http.csrf().disable();
 
         // Set session management to stateless
         http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
@@ -80,30 +90,26 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         // ).and();
 
         //Set permissions on endpoints
-        http.authorizeRequests()
+        http = http.authorizeRequests()
         .antMatchers(AUTH_WHITELIST).permitAll()
                 // .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
                 // .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
                 // .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
                 // .antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMIN.name())
-                .anyRequest().authenticated().and().headers().frameOptions().sameOrigin();
+                .anyRequest().authenticated().and().headers().frameOptions().sameOrigin().and();
         
-        //Add JWT token filter
-        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
+        //Add Authentication filter.
+        http.addFilter(customAuthenticationFilter);
+
+        //Add Authorization filter.
+        http.addFilterBefore(new CustomAuthorizationFilter(jwtTokenProvider, userService), UsernamePasswordAuthenticationFilter.class);
     }
-    
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider());
-    }
+
 
     @Bean
-    protected DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(appUserService);
-
-        return provider;
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean

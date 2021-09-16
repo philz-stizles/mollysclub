@@ -35,15 +35,13 @@ run mail server:
 Ensure to enable annotation processing where necessary depending on IDE, for example using web
 pom.xml:
 
-    ```xml
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <optional>true</optional>
-      </dependency>
-    ```
-
-# Java Kit
+```xml
+  <dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+  </dependency>
+```
 
 ## H2
 
@@ -144,3 +142,30 @@ usage:
     GRANT DELETE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
     GRANT UPDATE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
   ```
+
+## JMS
+
+publishing and subscribing to messages using a JMS broker.
+Apache ActiveMQ
+
+## Spring Boot properties
+
+- Overview:
+
+  - Supports yaml-based files.
+  - The properties file path can be customized. For example, while running the
+  - @Value Annotation: Spring boot will throw the Illegal argument exception if any of these properties are not found.
+
+    ```java
+      @Value("${mollysclub.jwt.secret}")
+      private String jwtSecret;
+    ```
+
+  - Priority:
+    Command-line > JVM Parameters > OS System variables > ClassPath
+
+  - Spring Boot tries to find the properties file in the following order:
+
+    Under "config" folder > Current Directory > Under "config" folder under class path > Root class path
+
+- java -jar myJar.jar --property=values

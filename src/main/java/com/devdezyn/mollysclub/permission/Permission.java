@@ -2,9 +2,13 @@ package com.devdezyn.mollysclub.permission;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "Permission")
 @Table(
         name = "permission",
@@ -26,4 +30,11 @@ public class Permission {
     private Long id;
     private String name;
     private String description;
+
+
+        public Permission(String name, String description) {
+                this.name = name;
+                this.description = description;
+        }
+    
 }
