@@ -17,6 +17,7 @@ public class Appointment {
   private Long id;
 
   private Date when;
+  private String mandate;
   private Date createdAt;
   private Date updatedAt;
   private AppointmentStatus status;

@@ -182,7 +182,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				
-				<configuration>
+				<!-- <configuration>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -196,7 +196,7 @@
 							<version>1.18.20</version>
 						</path>
 					</annotationProcessorPaths>
-				</configuration>
+				</configuration> -->
 			</plugin>
 		</plugins>
 	</build>
