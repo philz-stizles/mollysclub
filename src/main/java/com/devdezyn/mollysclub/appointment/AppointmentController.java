@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = "Appointment")
 @RestController
 @RequestMapping(path="/api/v1/appointments")
 public class AppointmentController {
@@ -31,9 +32,9 @@ public class AppointmentController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<List<AppointmentDTO>> getAll() {
+  public ResponseEntity<List<AppointmentDto>> getAll() {
 
-    return new ResponseEntity<List<AppointmentDTO>>(appointmentService.getAll(), HttpStatus.OK);
+    return new ResponseEntity<List<AppointmentDto>>(appointmentService.getAll(), HttpStatus.OK);
   }
 
   // @GetMapping(path="{id}")

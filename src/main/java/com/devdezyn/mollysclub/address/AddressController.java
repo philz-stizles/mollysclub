@@ -11,12 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Api(tags = "Address")
 @RestController
 @RequestMapping(path="/api/v1/addresses")
 public class AddressController {
-  private AddressService addressService;
+  private final AddressService addressService;
   
   @Autowired
   public AddressController(AddressService addressService) {
@@ -33,31 +37,33 @@ public class AddressController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<List<AddressDTO>> getPatients() {
-    var addresses = addressService.findAll();
+  public ResponseEntity<List<AddressDto>> getAddress() {
+    var addressDtos = addressService.findAll();
 
-    return new ResponseEntity<List<AddressDTO>>(addresses, HttpStatus.OK);
+    return new ResponseEntity<List<AddressDto>>(addressDtos, HttpStatus.OK);
   }
 
   // @GetMapping(path="{id}")
-  // public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
-  //   PatientDto patientDto = patientService.findById(id);
+  // public ResponseEntity<AddressDto> getAddress(@PathVariable Long id) {
+  //   AddressDto addressDto = addressService.findManyByOwner(id);
     
-  //   return new ResponseEntity<PatientDto>(patientDto, HttpStatus.OK);
+  //   return new ResponseEntity<AddressDto>(addressDto, HttpStatus.OK);
   // }
   
   // @PostMapping
-  // public String createPatient(@RequestBody PatientDto categoryDTO) {
-  //   return "Patient is saved successfully";
+  // public ResponseEntity<AddressDto> createAddress(@RequestBody AddressDto dto) {
+  //   AddressDto addressDto = addressService.createyByOwner(id);
+    
+  //   return new ResponseEntity<AddressDto>(addressDto, HttpStatus.CREATED);
   // }
   
-  // @PutMapping(path="{id}")
-  // public String updatePatient(@PathVariable Long id, @RequestBody PatientDto categoryDTO) {
-  //   return "Patient is saved successfully";
-  // }
+  @PutMapping(path="{id}")
+  public String updateAddress(@PathVariable Long id, @RequestBody AddressDto dto) {
+    return "Address is saved successfully";
+  }
   
-  // @DeleteMapping(path="{id}")
-  // public String deletePatient(@PathVariable Long id) {
-  //     return "Patient is saved successfully";
-  // }
+  @DeleteMapping(path="{id}")
+  public String deleteAddress(@PathVariable Long id) {
+      return "Address is saved successfully";
+  }
 }

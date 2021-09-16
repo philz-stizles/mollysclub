@@ -1,24 +1,28 @@
-package com.devdezyn.mollysclub.auth.token;
+// package com.devdezyn.mollysclub.auth.token;
 
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+// import io.jsonwebtoken.security.Keys;
+// import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.SecretKey;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class JwtSecretKey {
-    private final JwtConfig jwtConfig;
+// import javax.crypto.SecretKey;
 
-    @Autowired
-    public JwtSecretKey(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
-    }
+// @Slf4j
+// @Configuration
+// public class JwtSecretKey {
+//     private final JwtConfig jwtConfig;
 
-    @Bean
-    public SecretKey secretKey() {
-        return Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes());
-    }
+//     @Autowired
+//     public JwtSecretKey(JwtConfig jwtConfig) {
+//         this.jwtConfig = jwtConfig;
+//     }
 
-}
+//     @Bean
+//     SecretKey secretKey() {
+//         log.info("In SecretKey Bean {}", jwtConfig.getSecretKey());
+//         return Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes());
+//     }
+
+// }

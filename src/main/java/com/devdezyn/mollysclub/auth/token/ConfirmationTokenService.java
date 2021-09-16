@@ -3,7 +3,7 @@ package com.devdezyn.mollysclub.auth.token;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import com.devdezyn.mollysclub.auth.AppUser;
+import com.devdezyn.mollysclub.user.User;
 
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class ConfirmationTokenService {
     return confirmationTokenRepository.findByToken(token);
   }
 
-   public Optional<ConfirmationToken> getTokenByAppUser(AppUser appUser) {
+   public Optional<ConfirmationToken> getTokenByAppUser(User appUser) {
     return confirmationTokenRepository.findByAppUser(appUser);
   }
 

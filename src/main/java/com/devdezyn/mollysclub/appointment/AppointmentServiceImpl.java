@@ -2,44 +2,44 @@ package com.devdezyn.mollysclub.appointment;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor // @RequiredArgsConstructor generates a constructor 
+// with 1 parameter for each field that requires special handling. All 
+// non-initialized final fields get a parameter, as well as any fields that 
+// are marked as @NonNull that aren't initialized where they are declared. 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
-  private final AppointmentDAO addressDAO;
-  
-  @Autowired
-  public AppointmentServiceImpl(AppointmentDAO addressDAO) {
-    this.addressDAO = addressDAO;
-  }
+  private final AppointmentRepository appointmentRepository;
 
   @Override
-  public List<AppointmentDTO> getAll() {
+  public List<AppointmentDto> getAll() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AppointmentDTO getById(Long ownerId) {
+  public AppointmentDto getById(Long ownerId) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AppointmentDTO create(Long creatorId, AppointmentDTO addressDTO) {
+  public AppointmentDto create(Long creatorId, AppointmentDto appointmentDTO) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AppointmentDTO updateByCreator(Long creatorId, Long appointmentId, AppointmentDTO addressDTO) {
+  public AppointmentDto updateByCreator(Long creatorId, Long appointmentId, AppointmentDto appointmentDTO) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AppointmentDTO cancel(Long creatorId, Long appointmentId) {
+  public AppointmentDto cancel(Long creatorId, Long appointmentId) {
     // TODO Auto-generated method stub
     return null;
   }

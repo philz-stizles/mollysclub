@@ -1,71 +1,76 @@
-package com.devdezyn.mollysclub.auth.token;
+// package com.devdezyn.mollysclub.auth.token;
 
-import com.google.common.net.HttpHeaders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+// import com.google.common.net.HttpHeaders;
+// import io.jsonwebtoken.security.Keys;
+// import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.SecretKey;
+// import org.springframework.boot.context.properties.ConfigurationProperties;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConfigurationProperties(prefix = "mollysclub.jwt")
-public class JwtConfig{
-    private String secretKey;
-    private Integer tokenExpirationAfterDays; // 15 mins
-    private String tokenPrefix;
-    private String headerString;
-    private String signupUrl;
+// import javax.crypto.SecretKey;
 
-    public JwtConfig() {
-    }
+// @Slf4j
+// @Configuration
+// @ConfigurationProperties(prefix = "app.jwt")
+// public class JwtConfig{
+//     private String secretKey;
+//     private Integer tokenExpirationAfterMins; // 15 mins
+//     private String tokenPrefix;
+//     private String headerString;
+//     private String signupUrl;
 
-    public String getSecretKey() {
-        return secretKey;
-    }
+//     public JwtConfig() {
+//     }
 
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
+//     public String getSecretKey() {
+//         log.info(secretKey);
+//         return secretKey;
+//     }
 
-    public Integer getTokenExpirationAfterDays() {
-        return tokenExpirationAfterDays;
-    }
+//     public void setSecretKey(String secretKey) {
+//         log.info(secretKey);
+//         this.secretKey = secretKey;
+//     }
 
-    public void setTokenExpirationAfterDays(Integer tokenExpirationAfterDays) {
-        this.tokenExpirationAfterDays = tokenExpirationAfterDays;
-    }
+//     public Integer getTokenExpirationAfterMins() {
+//         return tokenExpirationAfterMins;
+//     }
 
-    public String getTokenPrefix() {
-        return tokenPrefix;
-    }
+//     public void setTokenExpirationAfterMins(Integer tokenExpirationAfterMins) {
+//         this.tokenExpirationAfterMins = tokenExpirationAfterMins;
+//     }
 
-    public void setTokenPrefix(String tokenPrefix) {
-        this.tokenPrefix = tokenPrefix;
-    }
+//     public String getTokenPrefix() {
+//         return tokenPrefix;
+//     }
 
-    public String getHeaderString() {
-        return headerString;
-    }
+//     public void setTokenPrefix(String tokenPrefix) {
+//         this.tokenPrefix = tokenPrefix;
+//     }
 
-    public void setHeaderString(String headerString) {
-        this.headerString = headerString;
-    }
+//     public String getHeaderString() {
+//         return headerString;
+//     }
 
-    public String getSignupUrl() {
-        return signupUrl;
-    }
+//     public void setHeaderString(String headerString) {
+//         this.headerString = headerString;
+//     }
 
-    public void setSignupUrl(String signupUrl) {
-        this.signupUrl = signupUrl;
-    }
+//     public String getSignupUrl() {
+//         return signupUrl;
+//     }
 
-    @Bean
-    public SecretKey getSecretKeyForSigning() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
+//     public void setSignupUrl(String signupUrl) {
+//         this.signupUrl = signupUrl;
+//     }
 
-    public String getAuthorizationHeaders() {
-        return HttpHeaders.AUTHORIZATION;
-    }
-}
+//     @Bean
+//     public SecretKey getSecretKeyForSigning() {
+//         return Keys.hmacShaKeyFor(secretKey.getBytes());
+//     }
+
+//     public String getAuthorizationHeaders() {
+//         return HttpHeaders.AUTHORIZATION;
+//     }
+// }

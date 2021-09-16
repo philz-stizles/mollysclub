@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface  PermissionService {
 
-    public List<Permission> getPermissions();
+    public List<PermissionDto> getPermissions();
 }

@@ -3,12 +3,12 @@ package com.devdezyn.mollysclub.address;
 import java.util.List;
 
 public interface AddressService {
-  List<AddressDTO> findAll();
-  List<AddressDTO> findManyByOwner(Long ownerId);
-  AddressDTO createByOwner(AddressDTO addressDTO);
+  List<AddressDto> findAll();
+  List<AddressDto> findManyByOwner(Long ownerId);
+  AddressDto createByOwner(AddressDto addressDTO);
 
-  AddressDTO updateByOwner(Long ownerId, Long addressId, AddressDTO addressDTO);
+  AddressDto updateByOwner(Long ownerId, Long addressId, AddressDto addressDTO);
 
-  AddressDTO deleteOneByOwner(Long ownerId, Long addressId);
-  AddressDTO deleteManyByOwner(Long ownerId, List<Long> addressIds);
+  AddressDto deleteOneByOwner(Long ownerId, Long addressId);
+  AddressDto deleteManyByOwner(Long ownerId, List<Long> addressIds);
 }
