@@ -2,6 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main.svg?style=svg)](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main)
 
+![Branches](.github/badges/branches.svg)
+
 ## Introduction
 
 ## Development Tools
@@ -200,9 +202,9 @@ Apache ActiveMQ
 - Git actions
 - Circle CI
 
-## Code Coverage
+## Code Coverage [Not compatible with Java 11]
 
-- Using Codecov - (See [https://docs.codecov.com/docs](docs))
+- Using Codecov with Circle CI - (See [https://docs.codecov.com/docs](docs))
 
   - Sign up [https://docs.codecov.com](here)
   - Configure for Java Maven:
