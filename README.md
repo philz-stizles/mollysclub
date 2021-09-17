@@ -1,6 +1,12 @@
 # mollysclub-api
 
+![Coverage](.github/badges/jacoco.svg)
+
 ![Branches](.github/badges/branches.svg)
+
+![example workflow](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml/badge.svg)
+
+<!-- ![Branches](.github/badges/branches.svg) -->
 
 <!-- [![Coverage](.github/badges/jacoco.svg)](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml) -->
 
