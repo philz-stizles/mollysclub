@@ -248,3 +248,7 @@ Apache ActiveMQ
         name: Send to CodeCov
         command: bash <(curl -s https://codecov.io/bash)
     ```
+
+## Creating Executable Jar
+
+-

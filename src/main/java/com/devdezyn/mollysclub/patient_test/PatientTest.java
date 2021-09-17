@@ -18,9 +18,13 @@ public class PatientTest {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String title;
+  private String name;
+
+  private String type;
 
   private String description;
+
+  private String report;
   
   private Date createdAt;
   private Date updatedAt;

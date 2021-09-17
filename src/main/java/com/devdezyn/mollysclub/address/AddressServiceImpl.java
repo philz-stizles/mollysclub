@@ -8,18 +8,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AddressServiceImpl implements AddressService {
-  private final AddressRepository addressDAO;
+  private final AddressRepository addressRepository;
   private final AddressMapper addressMapper;
   
   @Autowired
-  public AddressServiceImpl(AddressRepository addressDAO, AddressMapper addressMapper) {
-    this.addressDAO = addressDAO;
+  public AddressServiceImpl(AddressRepository addressRepository, AddressMapper addressMapper) {
+    this.addressRepository = addressRepository;
     this.addressMapper = addressMapper;
   }
 
   @Override
   public List<AddressDto> findAll() {
-    return addressDAO.findAll()
+    return addressRepository.findAll()
       .stream()
       .map(a -> addressMapper.toDto(a))
       .collect(Collectors.toList());

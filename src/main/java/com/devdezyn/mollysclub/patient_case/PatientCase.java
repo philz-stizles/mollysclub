@@ -1,5 +1,6 @@
 package com.devdezyn.mollysclub.patient_case;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,14 @@ public class PatientCase {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  private String description;
+
+  private String symptoms;
+
+  private Period duration;
+
+  private Integer noOfTimesReOpened;
 
   private Date createdAt;
   private Date updatedAt;
