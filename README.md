@@ -1,10 +1,10 @@
 # mollysclub-api
 
-[![Coverage](.github/badges/jacoco.svg)](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml)
+![Branches](.github/badges/branches.svg)
+
+<!-- [![Coverage](.github/badges/jacoco.svg)](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml) -->
 
 <!-- [![CircleCI](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main.svg?style=svg)](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main) -->
-
-<!-- ![Branches](.github/badges/branches.svg) -->
 
 ## Introduction
 
