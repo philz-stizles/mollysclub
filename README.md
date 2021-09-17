@@ -1,6 +1,6 @@
 # mollysclub-api
 
-[![CircleCI](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main.svg?style=svg)](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main)
+<!-- [![CircleCI](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main.svg?style=svg)](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main) -->
 
 ![Branches](.github/badges/branches.svg)
 
