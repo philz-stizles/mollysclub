@@ -119,31 +119,54 @@ usage:
 
 ## JMS Messaging
 
+## Mongo
+
+- Running Mongo in a docker container: PORT 27017 automatically exposed
+
+  ```bash
+   docker run --name mongo-dev --port 27017:27017 -d --mongo:latest
+
+   docker logs -f <container-id>
+  ```
+
 ## MySQL
 
-- Create local instance: Run natively or in a docker container
-- Create database:
+- Running MySQL in a docker container:
 
   ```bash
-    CREATE DATABASE javakit_dev;
-    CREATE DATABASE javakit_prod;
+    docker run --name mysql-dev -e MYSQL_ROOT_PASSWORD=P@ssw0rd -d mysql:latest
+
+    docker exec -it mysql-dev bash mysql
+
+    mysql --user=root -p
+
+    Enter password:P@ssw0rd
   ```
 
-- Create username & password:
+- Create local instance: Run natively
 
-  ```bash
-    CREATE USER 'javakit_dev_admin'@'localhost' IDENTIFIED BY 'p@ssw0rd';
-    GRANT SELECT ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
-    GRANT INSERT ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
-    GRANT DELETE ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
-    GRANT UPDATE ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
+  - Create database:
 
-    CREATE USER 'javakit_prod_admin'@'localhost' IDENTIFIED BY 'p@ssw0rd';
-    GRANT SELECT ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
-    GRANT INSERT ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
-    GRANT DELETE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
-    GRANT UPDATE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
-  ```
+    ```bash
+      CREATE DATABASE javakit_dev;
+      CREATE DATABASE javakit_prod;
+    ```
+
+  - Create username & password:
+
+    ```bash
+      CREATE USER 'javakit_dev_admin'@'localhost' IDENTIFIED BY 'p@ssw0rd';
+      GRANT SELECT ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
+      GRANT INSERT ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
+      GRANT DELETE ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
+      GRANT UPDATE ON javakit_dev.* TO 'javakit_dev_admin'@'localhost';
+
+      CREATE USER 'javakit_prod_admin'@'localhost' IDENTIFIED BY 'p@ssw0rd';
+      GRANT SELECT ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
+      GRANT INSERT ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
+      GRANT DELETE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
+      GRANT UPDATE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
+    ```
 
 ## JMS
 
@@ -171,3 +194,47 @@ Apache ActiveMQ
     Under "config" folder > Current Directory > Under "config" folder under class path > Root class path
 
 - java -jar myJar.jar --property=values
+
+## Test Runners
+
+- Git actions
+- Circle CI
+
+## Code Coverage
+
+- Using Codecov - (See [https://docs.codecov.com/docs](docs))
+
+  - Sign up [https://docs.codecov.com](here)
+  - Configure for Java Maven:
+
+    - [https://docs.codecov.com/docs/supported-languages](List of language configs)
+    - [https://github.com/codecov/example-java-maven](Maven configs)
+
+    ```xml
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>2.7</version>
+          <configuration>
+              <formats>
+                  <format>html</format>
+                  <format>xml</format>
+              </formats>
+              <check />
+          </configuration>
+      </plugin>
+    ```
+
+  - Configure yml CI file:
+
+    ```yml
+    # run tests!
+    - run: mvn integration-test cobertura:cobertura
+
+    - store_test_results:
+        path: target/surefire-reports
+
+    - run:
+        name: Send to CodeCov
+        command: bash <(curl -s https://codecov.io/bash)
+    ```
