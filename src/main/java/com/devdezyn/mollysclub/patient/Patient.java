@@ -1,5 +1,6 @@
 package com.devdezyn.mollysclub.patient;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,12 @@ public class Patient {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  private String insurance;
+
+  private LocalDate birthday;
+
+  private String gender;
   
   @OneToMany(cascade = CascadeType.ALL)
   private List<Address> addresses = new ArrayList<Address>();

@@ -1,12 +1,12 @@
-// package com.devdezyn.mollysclub.appointment;
+package com.devdezyn.mollysclub.patient_test;
 
-// import java.util.List;
+import java.util.List;
 
-// public interface PatientTestService {
-//   List<PatientCaseDto> getAll();
-//   PatientCaseDto getById(Long ownerId);
-//   PatientCaseDto create(Long creatorId, PatientCaseDto addressDTO);
+public interface PatientTestService {
+  List<PatientTestDto> getAll();
+  PatientTestDto getById(Long ownerId);
+  PatientTestDto create(Long creatorId, PatientTestDto addressDTO);
 
-//   PatientCaseDto updateByCreator(Long creatorId, Long appointmentId, PatientCaseDto addressDTO);
-//   PatientCaseDto cancel(Long creatorId, Long appointmentId);
-// }
+  PatientTestDto updateByCreator(Long creatorId, Long appointmentId, PatientTestDto addressDTO);
+  PatientTestDto cancel(Long creatorId, Long appointmentId);
+}
