@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 // )
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] AUTH_WHITELIST = {
+        "/jacoco/index.html",
         "/login",
             "/api/v*/users/**",
             "/api/v*/auth/**",
