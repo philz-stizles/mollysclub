@@ -1,16 +1,7 @@
 package com.devdezyn.mollysclub;
 
-import java.util.List;
-
-import com.devdezyn.mollysclub.permission.Permission;
-import com.devdezyn.mollysclub.permission.PermissionRepository;
-import com.devdezyn.mollysclub.role.RoleRepository;
-import com.devdezyn.mollysclub.user.UserRepository;
-
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class MollysclubApplication {
@@ -19,20 +10,20 @@ public class MollysclubApplication {
 		SpringApplication.run(MollysclubApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner run(
-			PermissionRepository permissionRepository, 
-			RoleRepository roleRepository, 
-		  UserRepository userRepository ) {
-        return args -> {
-            Permission read = new Permission("read", "User can create");
-            Permission write = new Permission("write", "User can create, update, delete");
-            Permission create = new Permission("create", "User can create");
-					  Permission update = new Permission("update", "User can update");
-						Permission delete = new Permission("delete", "User can delete");
+	// @Bean
+	// CommandLineRunner run(
+	// 		PermissionRepository permissionRepository, 
+	// 		RoleRepository roleRepository, 
+	// 	  UserRepository userRepository ) {
+  //       return args -> {
+  //           Permission read = new Permission("read", "User can create");
+  //           Permission write = new Permission("write", "User can create, update, delete");
+  //           Permission create = new Permission("create", "User can create");
+	// 				  Permission update = new Permission("update", "User can update");
+	// 					Permission delete = new Permission("delete", "User can delete");
 
-            permissionRepository.saveAll(List.of(read, create, write, update, delete));
-        };
-    }
+  //           permissionRepository.saveAll(List.of(read, create, write, update, delete));
+  //       };
+  //   }
 
 }

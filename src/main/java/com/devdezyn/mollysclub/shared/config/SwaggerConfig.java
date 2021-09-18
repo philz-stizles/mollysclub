@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.config;
+package com.devdezyn.mollysclub.shared.config;
 
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;

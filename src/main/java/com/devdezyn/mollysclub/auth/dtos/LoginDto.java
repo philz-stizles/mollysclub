@@ -1,18 +1,23 @@
-package com.devdezyn.mollysclub.auth.login;
+package com.devdezyn.mollysclub.auth.dtos;
+
+import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class LoginRequest {
+@Builder
+public class LoginDto {
+    
     @JsonProperty("email")
+    @NotBlank
     private String usernameOrEmail;
+
+    @NotBlank
+  @Size(min = 6, max = 20)
     private String password;
 }

@@ -3,6 +3,7 @@ package com.devdezyn.mollysclub.auth.token;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.devdezyn.mollysclub.auth.models.ConfirmationToken;
 import com.devdezyn.mollysclub.user.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
   Optional<ConfirmationToken> findByToken(String token);
 
-  Optional<ConfirmationToken> findByAppUser(User user);
+  Optional<ConfirmationToken> findByUser(User user);
 
   @Transactional
   @Modifying

@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.auth.token;
+package com.devdezyn.mollysclub.auth.models;
 
 import java.time.LocalDateTime;
 
@@ -40,13 +40,13 @@ public class ConfirmationToken {
 
   @ManyToOne
   @JoinColumn(nullable = false, name = "app_user_id")
-  private User appUser;
+  private User user;
 
-  public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User appUser) {
+  public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User user) {
     this.token = token;
     this.createdAt = createdAt;
     this.expiresAt = expiresAt;
-    this.appUser = appUser;
+    this.user = user;
   }
 
 }

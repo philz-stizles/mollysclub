@@ -3,6 +3,7 @@ package com.devdezyn.mollysclub.auth.token;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.devdezyn.mollysclub.auth.models.ConfirmationToken;
 import com.devdezyn.mollysclub.user.User;
 
 

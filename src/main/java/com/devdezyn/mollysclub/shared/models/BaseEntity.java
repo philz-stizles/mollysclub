@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.shared;
+package com.devdezyn.mollysclub.shared.models;
 
 import java.io.Serializable;
 

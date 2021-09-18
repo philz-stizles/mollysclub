@@ -1,9 +1,15 @@
 package com.devdezyn.mollysclub.auth.security;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.devdezyn.mollysclub.auth.services.JwtTokenService;
+import com.devdezyn.mollysclub.user.UserService;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,25 +21,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.devdezyn.mollysclub.auth.token.JwtTokenProvider;
-import com.devdezyn.mollysclub.user.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CustomAuthorizationFilter extends OncePerRequestFilter {
+public class CustomOncePerRequestFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider tokenProvider;
+    private final JwtTokenService tokenProvider;
     private final UserService userService;
 
     
@@ -41,27 +34,28 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String jwt = getJwtFromRequest(request);
+            String token = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && this.tokenProvider.validateToken(jwt)) {
-                String username = tokenProvider.getUsernameFromJWT(jwt);
+            if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
+                String email = tokenProvider.getUserFromToken(token);
 
-                UserDetails userDetails = userService.loadUserByUsername(username);
+                UserDetails userDetails = userService.loadUserByEmail(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                // authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
             log.error("Could not set user authentication in security context", ex.getMessage());
             // response.sendError(FORBIDDEN.value());
-            Map<String, Object> error = new HashMap<>();
-            error.put("status", false);
-            error.put("message", ex.getMessage());
+            // Map<String, Object> error = new HashMap<>();
+            // error.put("status", false);
+            // error.put("message", ex.getMessage());
 
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
+            //     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            //     new ObjectMapper().writeValue(response.getOutputStream(), error);
         }
 
         filterChain.doFilter(request, response);

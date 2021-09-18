@@ -1,18 +1,12 @@
 # mollysclub-api
 
-![Coverage](.github/badges/jacoco.svg)
-
-![Branches](.github/badges/branches.svg)
-
-![example workflow](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml/badge.svg)
-
-<!-- ![Branches](.github/badges/branches.svg) -->
-
-<!-- [![Coverage](.github/badges/jacoco.svg)](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml) -->
+![example workflow](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml/badge.svg) ![Coverage](.github/badges/jacoco.svg) ![Branches](.github/badges/branches.svg)
 
 <!-- [![CircleCI](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main.svg?style=svg)](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main) -->
 
 ## Introduction
+
+mvn spring-boot:run
 
 ## Development Tools
 
