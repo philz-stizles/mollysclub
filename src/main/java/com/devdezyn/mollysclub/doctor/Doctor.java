@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.devdezyn.mollysclub.address.Address;
-import com.devdezyn.mollysclub.shared.BaseEntity;
+import com.devdezyn.mollysclub.shared.models.BaseEntity;
 import com.devdezyn.mollysclub.user.User;
 
 import lombok.Data;

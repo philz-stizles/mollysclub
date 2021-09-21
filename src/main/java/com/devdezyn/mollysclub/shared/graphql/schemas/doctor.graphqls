@@ -1,0 +1,16 @@
+type Doctor {
+  id: ID!
+  name: String!
+  age: Int
+}
+
+# Root
+extend type Query {
+  findAllDoctors: [Doctor]!
+  countDoctors: Long!
+}
+
+# Root
+extend type Mutation {
+  createDoctor(name: String!, age: Int): Doctor!
+}

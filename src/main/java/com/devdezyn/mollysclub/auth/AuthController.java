@@ -1,37 +1,43 @@
 package com.devdezyn.mollysclub.auth;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.devdezyn.mollysclub.auth.login.LoginRequest;
-import com.devdezyn.mollysclub.auth.registration.*;
+
+import java.net.URI;
+
+import javax.validation.Valid;
+
+import com.devdezyn.mollysclub.auth.dtos.LoginDto;
+import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
+import com.devdezyn.mollysclub.auth.dtos.RegisterResponse;
+import com.devdezyn.mollysclub.auth.services.JwtTokenService;
+import com.devdezyn.mollysclub.auth.services.RegistrationService;
 import com.devdezyn.mollysclub.auth.token.JwtAuthenticationResponse;
-import com.devdezyn.mollysclub.auth.token.JwtTokenProvider;
+import com.devdezyn.mollysclub.shared.ApiBodyResponse;
 
 import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Api(tags = "Authentication")
 @RestController
 @RequestMapping(path = "/api/v1/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Validated // class level
 public class AuthController {
-  // private final RegistrationService registrationService;
-  // private final JwtTokenProvider tokenProvider;
+  private final RegistrationService registerService;
+  private final JwtTokenService tokenService;
   private final AuthenticationManager authenticationManager;
-
-  // @Autowired
-  // private final AuthenticationManager authenticationManager = new AuthenticationManager();
 
   @PostMapping("/register")
   @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
@@ -40,79 +46,79 @@ public class AuthController {
       @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
       @ApiResponse(code = 404, message = "Requested Resource Not Found"),
       @ApiResponse(code = 500, message = "Internal server error") })
-  public String register(@RequestBody RegisterRequest registerRequest) {
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> register(@Valid @RequestBody RegisterRequest registerRequest) {
 
-    // return registrationService.register(registerRequest);
+    RegisterResponse registerResponse = registerService.createUser(registerRequest);
 
-    return "";
+    URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/v1/auth/{username}")
+                .buildAndExpand(registerResponse.getUsername()).toUri();
+
+    return ResponseEntity
+        .created(location)
+        .body(new ApiBodyResponse<>(true, "User registered successfully"));
   }
 
-  //  @PostMapping("/register")
-  // @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
-  // @ApiResponses(value = {
-  //         @ApiResponse(code = 200, message = "Successfully retrieved list"),
-  //         @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-  //         @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-  //         @ApiResponse(code = 404, message = "Requested Resource Not Found"),
-  //         @ApiResponse(code = 500, message = "Internal server error")
-  // })
-  //  public String register(@RequestBody RegisterRequest registerRequest) {
+  @PostMapping("/registerWithEmailConfirmation")
+  @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list"),
+          @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+          @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+          @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+          @ApiResponse(code = 500, message = "Internal server error")
+  })
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> registerWithEmailConfirmation(RegisterRequest registerRequest) {
 
-  //    return registrationService.register(registerRequest);
-  //  }
+    var registerResponse = registerService.processConfirmationToken(registerRequest);
 
-  // @PostMapping("/registerWithEmailConfirmation")
-  // @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
-  // @ApiResponses(value = {
-  //         @ApiResponse(code = 200, message = "Successfully retrieved list"),
-  //         @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-  //         @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-  //         @ApiResponse(code = 404, message = "Requested Resource Not Found"),
-  //         @ApiResponse(code = 500, message = "Internal server error")
-  // })
-  // public ResponseEntity<List<PatientDto>> registerWithEmailConfirmation() {
+    return ResponseEntity.ok().body(new ApiBodyResponse<RegisterResponse>(true, "A verification link has been sent to your email", registerResponse));
+  }
 
-  //   return new ResponseEntity<List<PatientDto>>(patientService.findAll(), HttpStatus.OK);
-  // }
+  @GetMapping("/confirmEmail")
+  @ApiOperation(value = "This will confirm the users email", notes = "No implementation notes.")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list"),
+          @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+          @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+          @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+          @ApiResponse(code = 500, message = "Internal server error")
+  })
+  public String confirmEmail(@RequestParam("token") String token) {
+    return registerService.confirmToken(token);
+  }
 
-  // @GetMapping("/confirmEmail")
-  // @ApiOperation(value = "This will confirm the users email", notes = "No implementation notes.")
-  // @ApiResponses(value = {
-  //         @ApiResponse(code = 200, message = "Successfully retrieved list"),
-  //         @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-  //         @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-  //         @ApiResponse(code = 404, message = "Requested Resource Not Found"),
-  //         @ApiResponse(code = 500, message = "Internal server error")
-  // })
-  // public String confirmEmail(@RequestParam("token") String token) {
-  //   return registrationService.confirmToken(token);
-  // }
+  @PostMapping("/login")
+  @ApiOperation(value = "This will login an existing, valid user", notes = "No implementation notes.")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list"),
+          @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+          @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+          @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+          @ApiResponse(code = 500, message = "Internal server error")
+  })
+  public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginRequest) {
 
-  // @PostMapping("/login")
-  // @ApiOperation(value = "This will login an existing, valid user", notes = "No implementation notes.")
-  // @ApiResponses(value = {
-  //         @ApiResponse(code = 200, message = "Successfully retrieved list"),
-  //         @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-  //         @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-  //         @ApiResponse(code = 404, message = "Requested Resource Not Found"),
-  //         @ApiResponse(code = 500, message = "Internal server error")
-  // })
-  // public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
+        try {
+          Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsernameOrEmail(), 
+                loginRequest.getPassword()
+            )
+          );
 
-  //   Authentication authentication = authenticationManager.authenticate(
-  //           new UsernamePasswordAuthenticationToken(
-  //               loginRequest.getUsernameOrEmail(), 
-  //               loginRequest.getPassword()
-  //           )
-  //       );
+          SecurityContextHolder
+              .getContext()
+              .setAuthentication(authentication);
 
-  //       SecurityContextHolder
-  //           .getContext()
-  //           .setAuthentication(authentication);
+          String token = tokenService.generateToken(authentication, "");
+          return ResponseEntity.ok(new JwtAuthenticationResponse(token));
 
-  //       String jwt = tokenProvider.generateToken(authentication);
-  //       return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-  // }
+        } catch (Exception e) {
+          log.error(e.getMessage(), e);
+          return ResponseEntity.internalServerError().body(new ApiBodyResponse<>(false, "You cannot login at this time, please try again later"));
+        }
+  }
 
   @PostMapping("/refresh-token")
   @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")

@@ -1,42 +1,79 @@
-// package com.devdezyn.mollysclub.address;
+package com.devdezyn.mollysclub.address;
 
-// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-// import org.junit.Before;
-// import org.junit.jupiter.api.Test;
-// import org.junit.runner.RunWith;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-// import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-// import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.boot.test.mock.mockito.MockBean;
-// import org.springframework.security.test.context.support.WithMockUser;
-// import org.springframework.test.web.servlet.MockMvc;
-// import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import java.util.ArrayList;
+import java.util.List;
 
-// @RunWith(SpringJUnit4ClassRunner.class)
-// @WithMockUser
-// public class AddressControllerTest {
-//     @Autowired
-//     private MockMvc mockMvc;
+import com.devdezyn.mollysclub.AbstractTest;
 
-//     @MockBean
-//     AddressService addressService;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-//     // @Before
-//     // public void setUp() throws Exception {
-//     //     MockitoAnnotations.openMocks(this);
+@WebMvcTest(controllers = AddressController.class)
+// @WithMockCustomUser
+public class AddressControllerTest extends AbstractTest {
+  @Autowired
+  private WebApplicationContext context;
+  
+  @MockBean
+  private AddressService addressService;
 
-//     //     addressController = new AddressController(addressService);
-//     // }
+  
+  @Before
+	public void setup() {
+		mockMvc = MockMvcBuilders
+				.webAppContextSetup(context)
+				.apply(springSecurity()) 
+				.build();
+	}
 
-//     @Test
-//     @WithMockUser(username="admin",roles={"USER","ADMIN"})
-//     public void testGetAddress() throws Exception {
-//         this.mockMvc.perform(get("/api/v1/addresses"))
-//                 .andExpect(status().isOk());
-//         }
-// }
+  @Test
+  public void getAddresses() throws Exception {
+
+    AddressDto address = new AddressDto();
+    address.setId(1L);
+
+    List<AddressDto> mockDtosFromService = new ArrayList<>();
+    mockDtosFromService.add(address);
+
+    when(addressService.findAll()).thenReturn(mockDtosFromService);
+
+    // when
+    MockHttpServletResponse response = mockMvc.perform(get("/api/v1/addresses")
+        .accept(MediaType.APPLICATION_JSON)
+    ).andReturn().getResponse();
+
+    // then
+    assertEquals(response.getStatus(), HttpStatus.OK.value());
+    // assertEquals(response.getContentAsString(),
+    //        mapToJson(mockDtosFromService)
+    // );
+  }
+
+  // @Test @WithAnonymousUser
+  // public void test3() throws Exception {
+  //     // Details omitted for brevity
+  // }
+
+  // @Configuration
+  // @EnableWebSecurity
+  // static class Config extends MyWebSecurityConfigurerAdapter {
+  //   @Autowired
+  //   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  //     auth.inMemoryAuthentication().withUser("user").password("pa$$").roles("USER");
+  //     auth.inMemoryAuthentication().withUser("admin").password("pa$$").roles("ADMIN");
+  //   }
+  // }
+}

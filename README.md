@@ -1,20 +1,24 @@
 # mollysclub-api
 
-![Coverage](.github/badges/jacoco.svg)
-
-![Branches](.github/badges/branches.svg)
-
-![example workflow](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml/badge.svg)
-
-<!-- ![Branches](.github/badges/branches.svg) -->
-
-<!-- [![Coverage](.github/badges/jacoco.svg)](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml) -->
+![example workflow](https://github.com/philz-stizles/mollysclub-api/actions/workflows/tests-mollysclub.yml/badge.svg) ![Coverage](.github/badges/jacoco.svg) ![Branches](.github/badges/branches.svg)
 
 <!-- [![CircleCI](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main.svg?style=svg)](https://circleci.com/gh/philz-stizles/mollysclub-api/tree/main) -->
 
 ## Introduction
 
+mvn spring-boot:run
+
 ## Development Tools
+
+Chrome extension:
+
+RemoteLiveReload
+
+```bash
+  netstat -ano | findstr :<PORT>
+
+  taskkill /PID <PID> /F
+```
 
 maildev
 
@@ -177,6 +181,21 @@ usage:
       GRANT DELETE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
       GRANT UPDATE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
     ```
+
+## AWS S3
+
+    {
+      "Version":"2012-10-17",
+      "Statement":[
+        {
+          "Sid":"PublicRead",
+          "Effect":"Allow",
+          "Principal": "*",
+          "Action":["s3:GetObject"],
+          "Resource":["arn:aws:s3:::examplebucket/*"]
+        }
+      ]
+    }
 
 ## JMS
 

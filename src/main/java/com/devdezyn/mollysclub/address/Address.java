@@ -3,7 +3,7 @@ package com.devdezyn.mollysclub.address;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.devdezyn.mollysclub.shared.BaseEntity;
+import com.devdezyn.mollysclub.shared.models.BaseEntity;
 
 import lombok.*;
 

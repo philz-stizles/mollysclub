@@ -6,14 +6,18 @@ import io.swagger.annotations.*;
 
 import java.util.List;
 
+import javax.validation.constraints.Min;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "Appointment")
 @RestController
-@RequestMapping(path="/api/v1/appointments")
+@RequestMapping(path = "/api/v1/appointments")
+@Validated // class level
 public class AppointmentController {
   private AppointmentService appointmentService;
   
@@ -34,23 +38,23 @@ public class AppointmentController {
   })
   public ResponseEntity<List<AppointmentDto>> getAll() {
 
-    return new ResponseEntity<List<AppointmentDto>>(appointmentService.getAll(), HttpStatus.OK);
+    return new ResponseEntity<List<AppointmentDto>>(appointmentService.findAll(), HttpStatus.OK);
   }
 
-  // @GetMapping(path="{id}")
-  // public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
-  //   PatientDto patientDto = patientService.findById(id);
+  @GetMapping(path="{id}")
+  public ResponseEntity<AppointmentDto> get(@PathVariable @Min(1) Long id) {
+    AppointmentDto appointmentDto = appointmentService.findById(id);
     
-  //   return new ResponseEntity<PatientDto>(patientDto, HttpStatus.OK);
-  // }
+    return ResponseEntity.status(HttpStatus.OK).body(appointmentDto);
+  }
   
   // @PostMapping
-  // public String createPatient(@RequestBody PatientDto categoryDTO) {
+  // public String createPatient(@RequestBody AppointmentDto categoryDTO) {
   //   return "Patient is saved successfully";
   // }
   
   // @PutMapping(path="{id}")
-  // public String updatePatient(@PathVariable Long id, @RequestBody PatientDto categoryDTO) {
+  // public String updatePatient(@PathVariable Long id, @RequestBody AppointmentDto categoryDTO) {
   //   return "Patient is saved successfully";
   // }
   

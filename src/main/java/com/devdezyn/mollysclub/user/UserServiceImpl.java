@@ -1,22 +1,20 @@
 package com.devdezyn.mollysclub.user;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.devdezyn.mollysclub.auth.token.ConfirmationTokenService;
+import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
+import com.devdezyn.mollysclub.auth.models.UserPrincipal;
 import com.devdezyn.mollysclub.role.Role;
 import com.devdezyn.mollysclub.role.RoleDto;
 import com.devdezyn.mollysclub.role.RoleMapper;
 import com.devdezyn.mollysclub.role.RoleRepository;
+import com.devdezyn.mollysclub.shared.exceptions.BadRequestException;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,16 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
-  private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
+  private final static String USER_NOT_FOUND_MSG = "user with %s %s not found";
 
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final UserMapper userMapper;
   private final RoleMapper roleMapper;
-  private final PasswordEncoder passwordEncoder;
-  private final ConfirmationTokenService confirmationTokenService;
-
-  
+  private final BCryptPasswordEncoder passwordEncoder;
 
   @Override
   public UserDto getUserById(Long id) {
@@ -51,6 +46,15 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDto getUserByEmail(String email) {
     Optional<User> existingUser = userRepository.findByEmail(email);
+    if (!existingUser.isPresent()) {
+      throw new IllegalArgumentException("User does not exist");
+    }
+    return userMapper.toDto(existingUser.get());
+  }
+  
+  @Override
+  public UserDto getUserByUsername(String username) {
+    Optional<User> existingUser = userRepository.findByEmail(username);
     if(!existingUser.isPresent()) {
       throw new IllegalArgumentException("User does not exist");
     }
@@ -98,35 +102,58 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(username)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
-    
-    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-    user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+  @Transactional
+  public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+    log.debug(usernameOrEmail);
+    User existingUser = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "email or username", usernameOrEmail)));
 
-    return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    return UserPrincipal.create(existingUser);
   }
   
-  // @Override
-  // public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-  //   return appUserRepository.findByEmail(email)
-  //       .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
-  // }
+  @Override
+  @Transactional
+  public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+    User existingUser = userRepository.findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "email or username", email)));
 
+    return UserPrincipal.create(existingUser);
+  }
+
+  @Transactional
   public UserDetails loadUserById(Long id) {
-    User user = userRepository.findById(id)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, id)));
-    
-    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-    user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+    User existingUser = userRepository.findById(id)
+        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "id", id)));
 
-    return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    return UserPrincipal.create(existingUser);
   }
   
-  // public String registerUser(User appUser) {
+  public User createUser(RegisterRequest registerDto) {
+    if (userRepository.existsByUsername(registerDto.getUsername())) {
+      throw new BadRequestException("Username is already taken!");
+    }
+
+    if (userRepository.existsByEmail(registerDto.getEmail())) {
+      throw new BadRequestException("Email Address already in use!");
+    }
+
+    // Creating user's account
+    User user = new User(registerDto.getUsername(), registerDto.getEmail(), registerDto.getPassword());
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    // Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+    //   .orElseThrow(() -> new AppException("User Role not set."));
+
+    // user.setRoles(Collections.singleton(userRole));
+    return userRepository.save(user);
+
+    // return new RegisterResponse(user.getUsername(), user.getEmail());
+  }
+  
+  // public String createUser(UserDto userDto) {
   //   String token = "";
-  //   boolean userExists = appUserRepository.findByEmail(appUser.getEmail()).isPresent();
+  //   boolean userExists = userRepository.findByEmail(appUser.getEmail()).isPresent();
   //   if (userExists) {
   //     ConfirmationToken confirmationToken = confirmationTokenService.getTokenByAppUser(appUser)
   //       .orElseThrow(() -> new IllegalStateException("token not found"));
@@ -153,7 +180,7 @@ public class UserServiceImpl implements UserService {
   //   return token;
   // }
 
-  // public int enableAppUser(String email) {
-  //   return appUserRepository.enableAppUser(email);
-  // }
+  public int enableUser(String email) {
+    return 1;
+  }
 }

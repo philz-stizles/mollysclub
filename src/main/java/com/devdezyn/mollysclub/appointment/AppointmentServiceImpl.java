@@ -15,13 +15,13 @@ public class AppointmentServiceImpl implements AppointmentService {
   private final AppointmentRepository appointmentRepository;
 
   @Override
-  public List<AppointmentDto> getAll() {
+  public List<AppointmentDto> findAll() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public AppointmentDto getById(Long ownerId) {
+  public AppointmentDto findById(Long id) {
     // TODO Auto-generated method stub
     return null;
   }

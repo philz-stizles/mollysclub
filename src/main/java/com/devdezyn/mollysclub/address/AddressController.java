@@ -1,13 +1,9 @@
 package com.devdezyn.mollysclub.address;
 
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.annotations.*;
-
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.devdezyn.mollysclub.shared.ApiBodyResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,19 +11,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "Address")
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
+
+@Api(tags = "Addresses")
 @RestController
-@RequestMapping(path="/api/v1/addresses")
+@RequestMapping(path = "/api/v1/addresses")
+@RequiredArgsConstructor
 public class AddressController {
   private final AddressService addressService;
   
-  @Autowired
-  public AddressController(AddressService addressService) {
-    this.addressService = addressService;
-  }
-  
-
   @GetMapping
   @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
   @ApiResponses(value = {
@@ -37,10 +35,11 @@ public class AddressController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<List<AddressDto>> getAddress() {
-    var addressDtos = addressService.findAll();
+  public ResponseEntity<ApiBodyResponse<List<AddressDto>>> getAddresses() {
+    List<AddressDto> addressDtos = addressService.findAll();
+    String message = (addressDtos.size() <= 0) ? "No records found" : "Retrieved successfully";
 
-    return new ResponseEntity<List<AddressDto>>(addressDtos, HttpStatus.OK);
+    return ResponseEntity.ok().body(new ApiBodyResponse<>(true, message, addressDtos));
   }
 
   // @GetMapping(path="{id}")
@@ -57,13 +56,13 @@ public class AddressController {
   //   return new ResponseEntity<AddressDto>(addressDto, HttpStatus.CREATED);
   // }
   
-  @PutMapping(path="{id}")
-  public String updateAddress(@PathVariable Long id, @RequestBody AddressDto dto) {
-    return "Address is saved successfully";
-  }
+  // @PutMapping(path="{id}")
+  // public String updateAddress(@PathVariable Long id, @RequestBody AddressDto dto) {
+  //   return "Address is saved successfully";
+  // }
   
-  @DeleteMapping(path="{id}")
-  public String deleteAddress(@PathVariable Long id) {
-      return "Address is saved successfully";
-  }
+  // @DeleteMapping(path="{id}")
+  // public String deleteAddress(@PathVariable Long id) {
+  //     return "Address is saved successfully";
+  // }
 }
