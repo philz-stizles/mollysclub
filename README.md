@@ -10,6 +10,16 @@ mvn spring-boot:run
 
 ## Development Tools
 
+Chrome extension:
+
+RemoteLiveReload
+
+```bash
+  netstat -ano | findstr :<PORT>
+
+  taskkill /PID <PID> /F
+```
+
 maildev
 
 docker run -p 1080:80 -p 1025:25 djfarrelly/maildev
@@ -171,6 +181,21 @@ usage:
       GRANT DELETE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
       GRANT UPDATE ON javakit_prod.* TO 'javakit_prod_admin'@'localhost';
     ```
+
+## AWS S3
+
+    {
+      "Version":"2012-10-17",
+      "Statement":[
+        {
+          "Sid":"PublicRead",
+          "Effect":"Allow",
+          "Principal": "*",
+          "Action":["s3:GetObject"],
+          "Resource":["arn:aws:s3:::examplebucket/*"]
+        }
+      ]
+    }
 
 ## JMS
 

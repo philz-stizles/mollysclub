@@ -6,7 +6,7 @@ import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
 import com.devdezyn.mollysclub.auth.dtos.RegisterResponse;
 import com.devdezyn.mollysclub.auth.models.ConfirmationToken;
 import com.devdezyn.mollysclub.auth.validators.EmailValidator;
-import com.devdezyn.mollysclub.email.EmailSender;
+import com.devdezyn.mollysclub.shared.email.EmailSender;
 import com.devdezyn.mollysclub.user.UserService;
 
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     // Send email notification
     String link = "http://localhost:8080/api/v1/auth/confirmEmail?token=" + token;
-    emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+    emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link), null);
 
     return new RegisterResponse(user.getUsername(), user.getEmail());
   }

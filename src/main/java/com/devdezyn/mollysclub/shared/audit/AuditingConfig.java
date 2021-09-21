@@ -1,4 +1,4 @@
-package com.devdezyn.mollysclub.shared.config;
+package com.devdezyn.mollysclub.shared.audit;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

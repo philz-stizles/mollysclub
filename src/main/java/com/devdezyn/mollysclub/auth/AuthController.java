@@ -56,7 +56,7 @@ public class AuthController {
 
     return ResponseEntity
         .created(location)
-        .body(new ApiBodyResponse<RegisterResponse>(true, "User registered successfully"));
+        .body(new ApiBodyResponse<>(true, "User registered successfully"));
   }
 
   @PostMapping("/registerWithEmailConfirmation")

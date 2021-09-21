@@ -1,88 +1,65 @@
 package com.devdezyn.mollysclub.address;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.devdezyn.mollysclub.WithMockCustomUser;
-import com.devdezyn.mollysclub.auth.services.JwtTokenService;
-import com.devdezyn.mollysclub.user.UserService;
+import com.devdezyn.mollysclub.AbstractTest;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-// To test Spring MVC controllers are working as expected you can use the @WebMvcTest annotation. @WebMvcTest will auto-configure the Spring MVC infrastructure and limit scanned beans to @Controller, @ControllerAdvice, @JsonComponent, Filter, WebMvcConfigurer and HandlerMethodArgumentResolver. Regular @Component beans will not be scanned when using this annotation.
-
-// Often @WebMvcTest will be limited to a single controller and used in combination with @MockBean to provide mock implementations for required collaborators.
-
-// @WebMvcTest also auto-configures MockMvc. Mock MVC offers a powerful way to quickly test MVC controllers without needing to start a full HTTP server.
-
-// [Tip]
-// You can also auto-configure MockMvc in a non-@WebMvcTest (e.g. SpringBootTest) by annotating it with @AutoConfigureMockMvc.
-
-@RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(classes = SecurityConfig.class)
-// @WithMockCustomUser
 @WebMvcTest(controllers = AddressController.class)
-// @Import(SecuredControllerTest.Config.class)
-public class AddressControllerTest {
-  // @Autowired
-  private AddressController addressController;
-
+// @WithMockCustomUser
+public class AddressControllerTest extends AbstractTest {
   @Autowired
-  private MockMvc mockMvc;
-
+  private WebApplicationContext context;
+  
   @MockBean
-  BCryptPasswordEncoder passwordEncoder;
+  private AddressService addressService;
 
-  @MockBean
-  AuthenticationEntryPoint authenticationEntryPoint;
-
-  @MockBean
-  AddressService addressService;
-
-  @MockBean
-  UserService userService;
-
-  @MockBean
-  JwtTokenService jwtTokenService;
-
+  
   @Before
-  public void setUp() throws Exception {
-    MockitoAnnotations.openMocks(this);
-    
-    addressController = new AddressController(addressService);
-    mockMvc = MockMvcBuilders.standaloneSetup(addressController)
-      // .setControllerAdvice(new ControllerExceptionHandler())
-      .build();
-  }
+	public void setup() {
+		mockMvc = MockMvcBuilders
+				.webAppContextSetup(context)
+				.apply(springSecurity()) 
+				.build();
+	}
 
-  // @WithMockCustomUser
   @Test
-  public void getAddress() throws Exception {
+  public void getAddresses() throws Exception {
 
     AddressDto address = new AddressDto();
     address.setId(1L);
 
-    List<AddressDto> mockAddressDtosFromRepo = new ArrayList<>();
-    mockAddressDtosFromRepo.add(address);
+    List<AddressDto> mockDtosFromService = new ArrayList<>();
+    mockDtosFromService.add(address);
 
-    when(addressService.findAll()).thenReturn(mockAddressDtosFromRepo);
+    when(addressService.findAll()).thenReturn(mockDtosFromService);
 
-    mockMvc.perform(get("/api/v1/addresses")).andExpect(status().isOk());
+    // when
+    MockHttpServletResponse response = mockMvc.perform(get("/api/v1/addresses")
+        .accept(MediaType.APPLICATION_JSON)
+    ).andReturn().getResponse();
+
+    // then
+    assertEquals(response.getStatus(), HttpStatus.OK.value());
+    // assertEquals(response.getContentAsString(),
+    //        mapToJson(mockDtosFromService)
+    // );
   }
 
   // @Test @WithAnonymousUser

@@ -26,8 +26,8 @@ public class SwaggerConfig implements EnvironmentAware {
                 .apis(RequestHandlerSelectors.basePackage("com.devdezyn.mollysclub"))
                 .paths(PathSelectors.any())
                 .build()
-                .pathMapping("/");
-                // .enable(Boolean.parseBoolean(environment.getProperty("mollysclub.swagger.on")));
+                .pathMapping("/")
+                .enable(Boolean.parseBoolean(environment.getProperty("app.swagger.on")));
     }
 
 //    private Predicate<String> postPaths() {
