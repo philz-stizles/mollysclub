@@ -1,8 +1,8 @@
 version: "3.8"
 
 services:
-  mysqldb:
-    image: mysql:5.7
+  mysql-db:
+    image: mysql
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -12,10 +12,10 @@ services:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
     volumes: # volumes: named volumes that keeps our data alive after restart.
       - db:/var/lib/mysql
-  app:
+  mollysclub-server:
     depends_on:
-      - mysqldb
-    build: ./bezkoder-app
+      - mysql-db
+    build: ./mollysclub-app
     restart: on-failure
     env_file: ./.env
     ports:
@@ -32,6 +32,7 @@ services:
       - .m2:/root/.m2
     stdin_open: true #stdin_open and tty: keep open the terminal after building container
     tty: true
-
+  
+  mollysclub-client:
 volumes:
   db:

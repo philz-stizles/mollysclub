@@ -1,0 +1,16 @@
+.figureCard {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 5px;
+
+  & div:first-child span{
+    color: #8390A2;
+  }
+
+  & div:last-child i{
+    font-size: 4rem;
+    color: #f18958;
+  }
+}

@@ -1,0 +1,51 @@
+.sidebar {
+  width: 345px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: #1d2d5e;
+  // background-color: #57b962;
+  z-index: 100;
+
+  &__brand {
+    height: 9rem;
+    padding: 1rem 0 1rem 2rem;
+    color: #fff;
+
+    & i {
+      font-size: 3.2rem;
+      display: inline-block;
+      padding-right: 1rem;
+    }
+  }
+
+  &__menu {
+    margin-top: 1rem;
+    & li {
+      width: 100%;
+      margin-bottom: 1.7rem;
+      padding-left: 1rem;
+    }
+
+    & a {
+      padding-left: 1rem;
+      display: block;
+      color: #fff;
+      font-size: 1.6rem;
+
+      &.active {
+        background-color: #fff;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        color: #1d2d5e;
+        border-radius: 30px 0 0 30px;
+      }
+
+      & i:first-child {
+        font-size: 2.4rem;
+        padding-right: 1rem;
+      }
+    }
+  }
+}

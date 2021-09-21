@@ -1,0 +1,17 @@
+.statCard {
+  background-color: rgba(#fff, .8);
+  font-size: 1.5rem;
+  padding: 2rem 3rem;
+  text-align: center;
+  border-radius: 5px;
+  transition: transform .3s;
+  margin: 0 1.5rem;
+
+  &__title {
+    
+  }
+
+  &__text {
+    font-size: 1rem;
+  }
+}

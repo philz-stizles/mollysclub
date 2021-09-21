@@ -1,0 +1,15 @@
+.simpleArticle{
+  &__title {
+    line-height: 1.4;
+  }
+
+  &__subTitle {
+    text-transform: uppercase;
+    color: #57b962;
+    font-weight: 500;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+  }
+}

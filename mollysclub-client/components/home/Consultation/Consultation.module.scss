@@ -1,0 +1,11 @@
+.consultation {
+  padding: 5rem 0;
+
+  &__article{
+    flex: 0 1 50%
+  }
+
+  &__image{
+    flex: 1;
+  }
+}
