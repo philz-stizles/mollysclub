@@ -1,8 +1,13 @@
 package com.devdezyn.mollysclub.permission;
 
 import java.util.List;
+import java.util.Set;
 
 public interface  PermissionService {
 
-    public List<PermissionDto> getPermissions();
+    List<PermissionDto> getPermissions();
+
+    Set<PermissionDto> getPermissionDtosByIds(Set<Long> ids);
+
+    List<Permission> getPermissionsByIds(Set<Long> ids);
 }

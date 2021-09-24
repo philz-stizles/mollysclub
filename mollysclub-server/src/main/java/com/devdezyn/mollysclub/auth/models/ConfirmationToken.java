@@ -6,14 +6,14 @@ import javax.persistence.*;
 
 import com.devdezyn.mollysclub.user.User;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Entity
+@Table(name="confirmation_tokens")
 public class ConfirmationToken {
   @Id
   @SequenceGenerator(
@@ -38,8 +38,8 @@ public class ConfirmationToken {
 
   private LocalDateTime confirmedAt;
 
-  @ManyToOne
-  @JoinColumn(nullable = false, name = "app_user_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false, name = "user_id")
   private User user;
 
   public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User user) {

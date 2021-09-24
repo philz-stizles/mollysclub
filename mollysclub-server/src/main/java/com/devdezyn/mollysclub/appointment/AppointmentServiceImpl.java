@@ -15,6 +15,11 @@ public class AppointmentServiceImpl implements AppointmentService {
   private final AppointmentRepository appointmentRepository;
 
   @Override
+  public AppointmentDto create(AppointmentDto appointmentDTO) {
+    return null;
+  }
+
+  @Override
   public List<AppointmentDto> findAll() {
     // TODO Auto-generated method stub
     return null;
@@ -22,12 +27,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
   @Override
   public AppointmentDto findById(Long id) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public AppointmentDto create(Long creatorId, AppointmentDto appointmentDTO) {
     // TODO Auto-generated method stub
     return null;
   }

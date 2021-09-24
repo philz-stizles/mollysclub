@@ -1,7 +1,8 @@
 type Patient {
   id: ID!
-  name: String!
-  age: Int
+  gender: String!
+  birthday: String!
+  gender: String!
 }
 
 # Root

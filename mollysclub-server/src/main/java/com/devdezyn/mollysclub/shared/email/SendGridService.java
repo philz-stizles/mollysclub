@@ -7,5 +7,11 @@ public class SendGridService implements EmailSender {
     // TODO Auto-generated method stub
     
   }
+
+  @Override
+  public void sendMailMessageWithAttachments(String to, String subject, String text, String pathToAttachment) {
+    // TODO Auto-generated method stub
+    
+  }
   
 }

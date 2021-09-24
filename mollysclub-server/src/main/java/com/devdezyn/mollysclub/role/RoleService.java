@@ -3,8 +3,16 @@ package com.devdezyn.mollysclub.role;
 import java.util.List;
 
 public interface RoleService {
-  RoleDto getRoleById(Long id);
-  RoleDto getRoleByEmail(String email);
+  RoleDto createRole(RoleRequest roleRequest);
+
+  RoleDto getById(Long id);
+
+  RoleDto getByName(String email);
+  RoleDto searchByDescription(String email);
+
   List<RoleDto> getRoles();
-  RoleDto saveRole(RoleDto role);
+  
+  RoleDto updateRole(Long id, RoleRequest roleRequest);
+
+  RoleDto archiveRole(Long id);
 }

@@ -11,6 +11,8 @@ import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 // @MappedSuperclass annotation can be mapped in the same way as an entity except that 
 // the mappings will apply only to its subclasses since no table exists for the mapped 
 // superclass itself. When applied to the subclasses the inherited mappings will apply 
@@ -22,11 +24,4 @@ public class BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-    public BaseEntity() {
-    }
-
-    public BaseEntity(Long id) {
-        this.id = id;
-    }
 }

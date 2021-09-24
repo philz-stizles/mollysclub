@@ -1,9 +1,18 @@
 package com.devdezyn.mollysclub.role;
 
+import java.util.stream.Collectors;
+
+import com.devdezyn.mollysclub.permission.PermissionMapper;
+
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class RoleMapper {
+
+    private final PermissionMapper permissionMapper;
 
     public RoleDto toDto(Role entity) {
         if(entity == null) return null;
@@ -12,6 +21,12 @@ public class RoleMapper {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());
+        dto.setPermissions(
+                entity.getPermissions()
+                    .stream()
+                        .map(p -> permissionMapper.toDto(p))
+                    .collect(Collectors.toSet())
+        );
 
         return dto;
     }
@@ -24,6 +39,12 @@ public class RoleMapper {
         entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
+        entity.setPermissions(
+                dto.getPermissions()
+                    .stream()
+                        .map(p -> permissionMapper.toEntity(p))
+                    .collect(Collectors.toSet())
+        );
 
         return entity;
     }

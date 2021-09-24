@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.devdezyn.mollysclub.address.Address;
+import com.devdezyn.mollysclub.address.AddressDto;
+import com.devdezyn.mollysclub.address.AddressMapper;
+import com.devdezyn.mollysclub.address.AddressRepository;
 import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
 import com.devdezyn.mollysclub.auth.models.UserPrincipal;
 import com.devdezyn.mollysclub.role.Role;
@@ -30,14 +34,16 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
+  private final AddressRepository addressRepository;
   private final UserMapper userMapper;
   private final RoleMapper roleMapper;
+  private final AddressMapper addressMapper;
   private final BCryptPasswordEncoder passwordEncoder;
 
   @Override
   public UserDto getUserById(Long id) {
     Optional<User> existingUser = userRepository.findById(id);
-    if(!existingUser.isPresent()) {
+    if (!existingUser.isPresent()) {
       throw new IllegalArgumentException("User does not exist");
     }
     return userMapper.toDto(existingUser.get());
@@ -51,11 +57,11 @@ public class UserServiceImpl implements UserService {
     }
     return userMapper.toDto(existingUser.get());
   }
-  
+
   @Override
   public UserDto getUserByUsername(String username) {
     Optional<User> existingUser = userRepository.findByEmail(username);
-    if(!existingUser.isPresent()) {
+    if (!existingUser.isPresent()) {
       throw new IllegalArgumentException("User does not exist");
     }
     return userMapper.toDto(existingUser.get());
@@ -63,20 +69,31 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UserDto> getUsers() {
-    List<UserDto> userDtos = userRepository.findAll()
-        .stream()
-        .map(u -> userMapper.toDto(u))
+    List<UserDto> userDtos = userRepository.findAll().stream().map(u -> userMapper.toDto(u))
         .collect(Collectors.toList());
-    
+
     return userDtos;
   }
 
   @Override
-  public UserDto saveUser(UserDto userDto) {
-    log.info("Saving new user {} to the database", userDto.getUsername());
-    var savedUser = userRepository.save(userMapper.toEntity(userDto));
-    savedUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-    return userMapper.toDto(savedUser);
+  public User saveUser(RegisterRequest registerRequest) {
+    if (userRepository.existsByUsername(registerRequest.getUsername())) {
+      throw new BadRequestException("Username is already taken!");
+    }
+
+    if (userRepository.existsByEmail(registerRequest.getEmail())) {
+      throw new BadRequestException("Email Address already in use!");
+    }
+    log.info("Saving new user {} to the database", registerRequest.getUsername());
+
+    // Creating user's account
+    User newUser = userMapper.fromRequestToEntity(registerRequest);
+
+    newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+    newUser.setEnabled(true);
+    var savedUser = userRepository.save(newUser);
+
+    return savedUser;
   }
 
   @Override
@@ -91,31 +108,31 @@ public class UserServiceImpl implements UserService {
     log.info("Adding role {} to user {}", roleName, username);
     var existingUser = userRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
-      
+
     Optional<Role> existingRole = roleRepository.findByName(roleName);
-    if(!existingRole.isPresent()) {
+    if (!existingRole.isPresent()) {
       throw new IllegalArgumentException("User does not exist");
     }
 
     existingUser.getRoles().add(existingRole.get());
-    
+
   }
 
   @Override
   @Transactional
   public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
     log.debug(usernameOrEmail);
-    User existingUser = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "email or username", usernameOrEmail)));
+    User existingUser = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow(
+        () -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "email or username", usernameOrEmail)));
 
     return UserPrincipal.create(existingUser);
   }
-  
+
   @Override
   @Transactional
   public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-    User existingUser = userRepository.findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "email or username", email)));
+    User existingUser = userRepository.findByEmail(email).orElseThrow(
+        () -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, "email or username", email)));
 
     return UserPrincipal.create(existingUser);
   }
@@ -127,7 +144,7 @@ public class UserServiceImpl implements UserService {
 
     return UserPrincipal.create(existingUser);
   }
-  
+
   public User createUser(RegisterRequest registerDto) {
     if (userRepository.existsByUsername(registerDto.getUsername())) {
       throw new BadRequestException("Username is already taken!");
@@ -138,7 +155,8 @@ public class UserServiceImpl implements UserService {
     }
 
     // Creating user's account
-    User user = new User(registerDto.getUsername(), registerDto.getEmail(), registerDto.getPassword());
+    User user = User.builder().username(registerDto.getUsername()).email(registerDto.getEmail())
+        .password(registerDto.getPassword()).build();
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -150,7 +168,87 @@ public class UserServiceImpl implements UserService {
 
     // return new RegisterResponse(user.getUsername(), user.getEmail());
   }
-  
+
+  @Override
+  public UserDto enableUser(Long id) {
+    log.info(String.valueOf(id));
+    Optional<User> existingUser = userRepository.findById(id);
+    if (!existingUser.isPresent()) {
+      throw new BadRequestException("User not found!");
+    }
+
+    existingUser.get().setLocked(false);
+
+    var user = userRepository.save(existingUser.get());
+    return userMapper.toDto(user);
+  }
+
+  @Override
+  @Transactional
+  public AddressDto createAddress(UserPrincipal currentUserPrincipal, AddressDto addressDto) {
+    // Retrieve existing User from UserPrincipal.
+    User existingUser = getExistingUser(currentUserPrincipal.getId());
+
+    // Add new address to existing user address list.
+    existingUser.getAddresses().add(addressMapper.toEntity(addressDto));
+
+    // Save the existing user.
+    userRepository.save(existingUser);
+
+    return addressDto;
+  }
+
+  @Override
+  public List<AddressDto> getAddresses(UserPrincipal currentUserPrincipal) {
+    // Retrieve User from User principal.
+    User targetUser = getExistingUser(currentUserPrincipal.getId());
+
+    // Add new address to target user address list;
+    return targetUser.getAddresses().stream().map(a -> addressMapper.toDto(a)).collect(Collectors.toList());
+  }
+
+  @Override
+  public AddressDto updateAddress(UserPrincipal currentUserPrincipal, Long addressId, AddressDto addressDto) {
+    // Retrieve User from User principal.
+    User existingUser = getExistingUser(currentUserPrincipal.getId());
+
+    existingUser.getAddresses().stream().map(a -> {
+      if (a.getId() == addressId) {
+        a.setStreet(addressDto.getStreet());
+        a.setCity(addressDto.getCity());
+        a.setState(addressDto.getState());
+        a.setCountry(addressDto.getCountry());
+      }
+      return a;
+    });
+
+    // Save the existing user.
+    userRepository.save(existingUser);
+
+    // Optional<Address> existingAddress = addressRepository.findById(addressId);
+
+    // existingAddress.get().setStreet(addressDto.getStreet());
+    // existingAddress.get().setCity(addressDto.getCity());
+    // existingAddress.get().setState(addressDto.getState());
+    // existingAddress.get().setCountry(addressDto.getCountry());
+
+    // addressRepository.save(existingAddress.get());
+
+    return addressDto;
+  }
+
+  @Override
+  public void deleteAddress(UserPrincipal currentUserPrincipal, Long id) {
+    // Retrieve User from User principal.
+    User existingUser = getExistingUser(currentUserPrincipal.getId());
+
+    // Remove address if it exists, or do nothing if it doesn't.
+    existingUser.getAddresses().removeIf(a -> a.getId() == id);
+
+    // Save the existing user.
+    userRepository.save(existingUser);
+  }
+
   // public String createUser(UserDto userDto) {
   //   String token = "";
   //   boolean userExists = userRepository.findByEmail(appUser.getEmail()).isPresent();
@@ -179,8 +277,13 @@ public class UserServiceImpl implements UserService {
 
   //   return token;
   // }
+  private User getExistingUser(Long id) {
+      // Retrieve User from User principal.
+    Optional<User> existingUser = userRepository.findById(id);
+    if (!existingUser.isPresent()) {
+      throw new BadRequestException("User not found!");
+    }
 
-  public int enableUser(String email) {
-    return 1;
+    return existingUser.get();
   }
 }

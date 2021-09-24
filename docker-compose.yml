@@ -12,10 +12,10 @@ services:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
     volumes: # volumes: named volumes that keeps our data alive after restart.
       - db:/var/lib/mysql
-  mollysclub-server:
+  mollysclub-api:
     depends_on:
       - mysql-db
-    build: ./mollysclub-app
+    build: ./mollysclub-api
     restart: on-failure
     env_file: ./.env
     ports:
@@ -33,6 +33,6 @@ services:
     stdin_open: true #stdin_open and tty: keep open the terminal after building container
     tty: true
   
-  mollysclub-client:
+  mollysclub-web:
 volumes:
   db:

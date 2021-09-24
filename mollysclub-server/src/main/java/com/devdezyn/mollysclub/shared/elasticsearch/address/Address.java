@@ -2,8 +2,6 @@ package com.devdezyn.mollysclub.shared.elasticsearch.address;
 
 import javax.persistence.Id;
 
-import com.devdezyn.mollysclub.shared.models.BaseEntity;
-
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;

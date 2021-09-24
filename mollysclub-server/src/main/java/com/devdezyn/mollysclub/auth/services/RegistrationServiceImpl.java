@@ -6,18 +6,34 @@ import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
 import com.devdezyn.mollysclub.auth.dtos.RegisterResponse;
 import com.devdezyn.mollysclub.auth.models.ConfirmationToken;
 import com.devdezyn.mollysclub.auth.validators.EmailValidator;
+import com.devdezyn.mollysclub.doctor.Doctor;
+import com.devdezyn.mollysclub.doctor.DoctorDto;
+import com.devdezyn.mollysclub.doctor.DoctorService;
+import com.devdezyn.mollysclub.gymn.GymnService;
+import com.devdezyn.mollysclub.patient.PatientService;
+import com.devdezyn.mollysclub.pharmacy.PharmacyService;
 import com.devdezyn.mollysclub.shared.email.EmailSender;
+import com.devdezyn.mollysclub.user.User;
+import com.devdezyn.mollysclub.user.UserDto;
+import com.devdezyn.mollysclub.user.UserMapper;
 import com.devdezyn.mollysclub.user.UserService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
   private final EmailValidator emailValidator;
   private final UserService userService;
+  private final UserMapper userMapper;
+  private final DoctorService doctorService;
+  // private final PatientService patientService;
+  // private final PharmacyService pharmacyService;
+  // private final GymnService gymnService;
   private final ConfirmationTokenService confirmationTokenService;
   private final EmailSender emailSender;
 
@@ -28,8 +44,8 @@ public class RegistrationServiceImpl implements RegistrationService {
       throw new IllegalStateException("Invalid email address");
     }
 
-    //Create AppUser and retrieve email email confirmation token
-    var user = userService.createUser(request);
+    //Create User and retrieve email email confirmation token
+    var user = userService.saveUser(request);
 
     // 
     String token = confirmationTokenService.saveConfirmationToken(user);
@@ -46,7 +62,117 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     return new RegisterResponse(user.getUsername(), user.getEmail()) ;
   }
-  
+
+  @Override
+  public RegisterResponse createUserWithEmailConfirmation(RegisterRequest request) {
+    var user = userService.createUser(request);
+
+    return new RegisterResponse(user.getUsername(), user.getEmail()) ;
+  }
+
+  @Override
+  public RegisterResponse createDoctor(RegisterRequest request) {
+    
+    // Save user credentials
+    User createdUser = userService.saveUser(request);
+
+    doctorService.create(createdUser);
+
+    return new RegisterResponse(createdUser.getUsername(), createdUser.getEmail()) ;
+  }
+
+  @Override
+  public RegisterResponse processDoctorsEmailConfirmation(RegisterRequest request) {
+    log.info(request.toString());
+    // Save user credentials
+    User user = userService.saveUser(request);
+
+    String token = confirmationTokenService.saveConfirmationToken(user);
+
+    // Send email notification
+    String link = "http://localhost:8009/api/v1/auth/confirm-email-create-doctor?token=" + token;
+    emailSender.send(request.getEmail(), "Email verification", buildEmail(request.getFirstName(), link));
+
+    return new RegisterResponse();
+  }
+
+   @Transactional // All or nothing multiple db writes
+  public RegisterResponse createDoctor(String token) {
+
+    ConfirmationToken confirmationToken = confirmationTokenService.getToken(token)
+        .orElseThrow(() -> new IllegalStateException("token not found"));
+    if (confirmationToken.getConfirmedAt() != null) {
+      throw new IllegalStateException("Email already confirmed");
+    }
+
+    LocalDateTime expiresAt = confirmationToken.getExpiresAt();
+    if (expiresAt.isBefore(LocalDateTime.now())) {
+      throw new IllegalStateException("Token has expired");
+    }
+
+    confirmationTokenService.setConfirmedAt(confirmationToken.getToken());
+
+    log.info(confirmationToken.toString());
+
+    User user = confirmationToken.getUser();
+
+    log.info(String.valueOf(confirmationToken.getUser().getId()));
+
+    UserDto userDto = userService.enableUser(confirmationToken.getUser().getId());
+
+    doctorService.create(user);
+
+    return new RegisterResponse();
+  }
+
+  @Override
+  public RegisterResponse createPatient(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createPatientWithEmailConfirmation(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createGymn(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createGymnWithEmailConfirmation(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createPharmacy(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createPharmacyWithEmailConfirmation(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createLaboratory(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RegisterResponse createLaboratoryWithEmailConfirmation(RegisterRequest request) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
   @Transactional // All or nothing multiple db writes
   public String confirmToken(String token) {
 
@@ -63,11 +189,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     confirmationTokenService.setConfirmedAt(confirmationToken.getToken());
 
-    userService.enableUser(confirmationToken.getUser().getEmail());
+    userService.enableUser(confirmationToken.getUser().getId());
 
     return "confirmed";
   }
-  
+
   private String buildEmail(String name, String link) {
         return"<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n"+
                 "\n"+

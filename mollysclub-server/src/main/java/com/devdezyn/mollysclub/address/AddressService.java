@@ -2,13 +2,12 @@ package com.devdezyn.mollysclub.address;
 
 import java.util.List;
 
+import com.devdezyn.mollysclub.shared.payloads.PagedResponse;
+
 public interface AddressService {
   List<AddressDto> findAll();
-  List<AddressDto> findManyByOwner(Long ownerId);
-  AddressDto createByOwner(AddressDto addressDTO);
 
-  AddressDto updateByOwner(Long ownerId, Long addressId, AddressDto addressDTO);
+  PagedResponse<AddressDto> findFiltered(int page, int size);
 
-  AddressDto deleteOneByOwner(Long ownerId, Long addressId);
-  AddressDto deleteManyByOwner(Long ownerId, List<Long> addressIds);
+  AddressDto findById(Long id);
 }

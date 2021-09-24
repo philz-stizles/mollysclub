@@ -1,5 +1,7 @@
 package com.devdezyn.mollysclub.auth.security;
 
+import java.util.Arrays;
+
 import com.devdezyn.mollysclub.auth.services.JwtTokenService;
 import com.devdezyn.mollysclub.user.UserService;
 
@@ -9,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -56,6 +59,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
 
     private final JwtTokenService jwtTokenProvider;
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+    
+        // Tell Spring to ignore securing the handshake endpoint. This allows the handshake to take place unauthenticated
+        web.ignoring().antMatchers("/stomp/**", "/api/v1/graphql");
+    
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -112,7 +123,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
+        config.setAllowedOrigins(Arrays.asList("http://127.0.0.1","http://127.0.0.1:5500/"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         // config.maxAge(3600);

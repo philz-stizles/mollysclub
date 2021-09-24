@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @Builder
+@ToString
 public class RegisterRequest {
   @Size(min = 2, max = 40)
   private final String firstName;

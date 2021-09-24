@@ -1,11 +1,17 @@
 package com.devdezyn.mollysclub.role;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.*;
+
+import com.devdezyn.mollysclub.permission.Permission;
+import com.devdezyn.mollysclub.shared.models.BaseEntity;
 
 import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity(name = "Role")
 @Table(
@@ -13,19 +19,27 @@ import lombok.*;
         uniqueConstraints = {
                 @UniqueConstraint(name = "role_name_unique", columnNames = "name")
         })
-public class Role {
-    @Id
-    @SequenceGenerator(
-            name = "role_sequence",
-            sequenceName = "role_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "role_sequence"
-    )
-    private Long id;
+public class Role extends BaseEntity {
     @Column(length = 60)
     private String name;
+
     private String description;
+
+    @Column( name = "is_active", columnDefinition = "tinyint(1) default false")
+    private Boolean isActive;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "role_permissions",
+                joinColumns = @JoinColumn(name = "role_id"),
+                inverseJoinColumns = @JoinColumn(name = "permission_id"))
+        private Set<Permission> permissions = new HashSet<>();
+
+    @Builder
+    public Role(Long id, String name, String description, Boolean isActive, Set<Permission> permissions) {
+            super(id);
+            this.name = name;
+            this.description = description;
+            this.permissions = permissions;
+            this.isActive = isActive;
+    }
 }

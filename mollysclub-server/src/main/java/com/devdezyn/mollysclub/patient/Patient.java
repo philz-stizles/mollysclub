@@ -4,31 +4,30 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
-import com.devdezyn.mollysclub.address.Address;
 import com.devdezyn.mollysclub.patient_case.PatientCase;
 import com.devdezyn.mollysclub.patient_test.PatientTest;
 import com.devdezyn.mollysclub.prescription.Prescription;
+import com.devdezyn.mollysclub.shared.models.BaseEntity;
 import com.devdezyn.mollysclub.user.User;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 @Entity
-public class Patient {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
+public class Patient extends BaseEntity {
   private String insurance;
 
   private LocalDate birthday;
 
   private String gender;
-  
-  @OneToMany(cascade = CascadeType.ALL)
-  private List<Address> addresses = new ArrayList<Address>();
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<PatientCase> cases = new ArrayList<PatientCase>();
@@ -40,5 +39,20 @@ public class Patient {
   private List<PatientTest> tests = new ArrayList<PatientTest>();
 
   @OneToOne(cascade = CascadeType.ALL)
-  private User account;
+  private User user;
+
+  @Builder
+  public Patient(Long id, String insurance, LocalDate birthday, String gender, List<PatientCase> cases, List<Prescription> prescriptions, List<PatientTest> tests, User user) {
+    super(id);
+    this.insurance = insurance;
+    this.birthday = birthday;
+    this.gender = gender;
+    this.cases = cases;
+    this.prescriptions = prescriptions;
+    this.tests = tests;
+    this.user = user;
+  }
+
+
+
 }

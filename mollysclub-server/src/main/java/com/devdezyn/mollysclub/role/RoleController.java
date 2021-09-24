@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import com.devdezyn.mollysclub.shared.ApiBodyResponse;
+
 @Api(tags = "Role")
 @RestController
 @RequestMapping(path = "api/v1/roles")
@@ -16,22 +18,23 @@ public class RoleController {
     private final RoleService RoleService;
 
     @GetMapping
-    public ResponseEntity<List<RoleDto>> getRoles() {
+    public ResponseEntity<ApiBodyResponse<List<RoleDto>>> getRoles() {
         var roles = RoleService.getRoles();
-        return ResponseEntity.ok().body(roles);
+        return ResponseEntity.ok().body(new ApiBodyResponse<>(true, "Retrieved successfully", roles));
     }
 
     @PostMapping
-    public ResponseEntity<List<RoleDto>> createRole() {
-        var roles = RoleService.getRoles();
-        return ResponseEntity.ok().body(roles);
+    public ResponseEntity<ApiBodyResponse<RoleDto>> createRole(@RequestBody RoleRequest roleRequest) {
+        RoleDto createdRoleDto = RoleService.createRole(roleRequest);
+        return ResponseEntity.ok().body(new ApiBodyResponse<>(true, "Retrieved successfully", createdRoleDto));
     }
 
-    @PutMapping
-    public ResponseEntity<List<RoleDto>> updateRole() {
-        var roles = RoleService.getRoles();
-        return ResponseEntity.ok().body(roles);
+    @PutMapping( path="/{id}")
+    public ResponseEntity<ApiBodyResponse<RoleDto>> updateRole(@PathVariable Long id, @RequestBody RoleRequest roleRequest) {
+        RoleDto updatedRoleDto = RoleService.updateRole(id, roleRequest);
+        return ResponseEntity.ok().body(new ApiBodyResponse<>(true, "Retrieved successfully", updatedRoleDto));
     }
+    
 
     @PutMapping(path="/archive")
     public ResponseEntity<List<RoleDto>> archiveRole() {

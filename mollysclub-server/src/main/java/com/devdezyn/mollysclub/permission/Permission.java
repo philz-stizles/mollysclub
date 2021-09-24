@@ -1,40 +1,43 @@
 package com.devdezyn.mollysclub.permission;
 
+import java.util.Set;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.devdezyn.mollysclub.role.Role;
+import com.devdezyn.mollysclub.shared.models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "Permission")
 @Table(
-        name = "permission",
+        name = "permissions",
         uniqueConstraints = {
                 @UniqueConstraint(name = "permission_name_unique", columnNames = "name")
         })
-public class Permission {
-    @Id
-    @SequenceGenerator(
-            name = "permission_sequence",
-            sequenceName = "permission_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "permission_sequence"
-    )
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Permission extends BaseEntity {
+    
+
+    @NotNull
     private String name;
+
+    @NotNull
     private String description;
 
-
-        public Permission(String name, String description) {
-                this.name = name;
-                this.description = description;
-        }
+    @ManyToMany(mappedBy = "permissions")
+    @JsonIgnore
+    private Set<Role> roles;
+        
+    @Builder
+    public Permission(Long id, String name, String description) {
+            super(id);
+            this.name = name;
+            this.description = description;
+    }
     
 }

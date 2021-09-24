@@ -13,15 +13,15 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class Query implements GraphQLQueryResolver {
-  private PatientRepository patientRepository;
-  private DoctorRepository tutorialRepository;
+  private final PatientRepository patientRepository;
+  private final DoctorRepository doctorRepository;
 
   public Iterable<Patient> findAllPatients() {
     return patientRepository.findAll();
   }
 
   public Iterable<Doctor> findAllDoctors() {
-    return tutorialRepository.findAll();
+    return doctorRepository.findAll();
   }
 
   public long countPatients() {
@@ -29,7 +29,7 @@ public class Query implements GraphQLQueryResolver {
   }
 
   public long countDoctors() {
-    return tutorialRepository.count();
+    return doctorRepository.count();
   }
 
 }

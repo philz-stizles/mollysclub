@@ -9,20 +9,30 @@ import com.devdezyn.mollysclub.address.Address;
 import com.devdezyn.mollysclub.shared.models.BaseEntity;
 import com.devdezyn.mollysclub.user.User;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
+@Table(name = "doctors")
 public class Doctor extends BaseEntity{
   private String specialization;
   private String mobile;
   private String gender;
-  private String email;
   private Integer age;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  private List<Address> addresses = new ArrayList<Address>();
-
   @OneToOne(cascade = CascadeType.ALL)
-  private User account;
+  private User user;
+
+  @Builder
+  public Doctor(Long id, String specialization, String mobile, String gender, Integer age, User user) {
+    super(id);
+    this.specialization = specialization;
+    this.mobile = mobile;
+    this.gender = gender;
+    this.age = age;
+    this.user = user;
+  }
+
 }

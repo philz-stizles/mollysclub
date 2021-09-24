@@ -2,7 +2,11 @@ package com.devdezyn.mollysclub.address;
 
 import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class AddressDto {
   private Long id;
   private Long locationId;

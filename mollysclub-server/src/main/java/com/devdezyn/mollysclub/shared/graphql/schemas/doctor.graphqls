@@ -1,6 +1,8 @@
 type Doctor {
   id: ID!
-  name: String!
+  specialization: String
+  mobile: String
+  gender: String!
   age: Int
 }
 
@@ -12,5 +14,5 @@ extend type Query {
 
 # Root
 extend type Mutation {
-  createDoctor(name: String!, age: Int): Doctor!
+  createDoctor(title: String!, description: String!, patientId: Int): Doctor!
 }

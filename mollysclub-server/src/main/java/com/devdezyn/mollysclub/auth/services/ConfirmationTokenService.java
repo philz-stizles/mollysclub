@@ -7,6 +7,8 @@ import java.util.UUID;
 import com.devdezyn.mollysclub.auth.models.ConfirmationToken;
 import com.devdezyn.mollysclub.auth.token.ConfirmationTokenRepository;
 import com.devdezyn.mollysclub.user.User;
+import com.devdezyn.mollysclub.user.UserDto;
+import com.devdezyn.mollysclub.user.UserMapper;
 
 import org.springframework.stereotype.Service;
 

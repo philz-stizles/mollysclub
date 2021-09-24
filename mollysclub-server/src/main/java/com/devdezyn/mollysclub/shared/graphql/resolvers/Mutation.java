@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Mutation implements GraphQLMutationResolver {
   private PatientRepository patientRepository;
-  private DoctorRepository tutorialRepository;
+  private DoctorRepository doctorRepository;
 
   public Patient createPatient(String name, Integer age) {
     Patient patient = new Patient();
@@ -29,34 +29,34 @@ public class Mutation implements GraphQLMutationResolver {
   }
 
   public Doctor createDoctor(String title, String description, Long patientId) {
-    Doctor tutorial = new Doctor();
+    Doctor doctor = new Doctor();
 
-    tutorialRepository.save(tutorial);
+    doctorRepository.save(doctor);
 
-    return tutorial;
+    return doctor;
   }
 
-  public boolean deleteDoctor(Long id) {
-    tutorialRepository.deleteById(id);
-    return true;
-  }
+  // public boolean deleteDoctor(Long id) {
+  //   doctorRepository.deleteById(id);
+  //   return true;
+  // }
 
-  public Doctor updateDoctor(Long id, String title, String description) throws NotFoundException {
-    Optional<Doctor> optDoctor = tutorialRepository.findById(id);
+  // public Doctor updateDoctor(Long id, String title, String description) throws NotFoundException {
+  //   Optional<Doctor> optDoctor = doctorRepository.findById(id);
 
-    if (optDoctor.isPresent()) {
-      Doctor tutorial = optDoctor.get();
+  //   if (optDoctor.isPresent()) {
+  //     Doctor doctor = optDoctor.get();
 
-      if (title != null)
+  //     if (title != null)
          
-      if (description != null)
+  //     if (description != null)
          
 
-      tutorialRepository.save(tutorial);
-      return tutorial;
-    }
+  //     doctorRepository.save(doctor);
+  //     return doctor;
+  //   }
 
-    throw new NotFoundException("Not found Doctor to update!");
-  }
+  //   throw new NotFoundException("Not found Doctor to update!");
+  // }
 
 }

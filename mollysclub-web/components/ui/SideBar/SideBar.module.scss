@@ -1,0 +1,27 @@
+.SideBar {
+  flex: 1;
+  height: calc(100vh - 50px);
+  background-color: rgb(251, 251, 255);
+  position: sticky;
+  top: 50px;
+}
+
+.SideBarWrapper {
+  padding: 20px;
+  color: #555;
+}
+
+.isClosed {
+  left: -100%;
+}
+
+@media only screen and (max-width: 1124px) {
+  .SideBar {
+    left: -100%;
+    z-index: 30;
+  }
+
+  .isClosed {
+    left: 0;
+  }
+}

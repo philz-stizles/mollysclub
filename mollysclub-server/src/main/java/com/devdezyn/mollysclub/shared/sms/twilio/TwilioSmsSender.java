@@ -8,6 +8,7 @@ import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,8 @@ public class TwilioSmsSender implements SmsSender {
             PhoneNumber from = new PhoneNumber(twilioConfig.getNumber());
             String message = smsRequest.getMessage();
             MessageCreator creator = Message.creator(to, from, message);
-            creator.create();
-            log.info("Send sms {}", smsRequest);
+            Message createdMessage = creator.create();
+            log.info("Send sms {}", createdMessage.getSid());
 
         } else {
             throw new IllegalArgumentException(
@@ -37,13 +38,16 @@ public class TwilioSmsSender implements SmsSender {
     
     public void sendMessages(BulkSmsRequest bulkSmsRequest) {
 
-        bulkSmsRequest.numbers.stream().forEach( number -> {
-            Message message = Message.creator(
-                new PhoneNumber(number),
-                new PhoneNumber(twilioConfig.getNumber()),
-                bulkSmsRequest.message).create();
+        bulkSmsRequest.numbers.stream().forEach(number -> {
+            Message message = Message
+                    .creator(new PhoneNumber(number), new PhoneNumber(twilioConfig.getNumber()), bulkSmsRequest.message)
+                    .create();
             System.out.println("Sent message w/ sid: " + message.getSid());
         });
+    }
+    
+    public void receiveSms(MultiValueMap<String, String> smsCallback) {
+
     }
     
     private boolean isPhoneNumberValid(String phoneNumber) {

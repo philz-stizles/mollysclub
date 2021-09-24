@@ -46,7 +46,101 @@ public class AuthController {
       @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
       @ApiResponse(code = 404, message = "Requested Resource Not Found"),
       @ApiResponse(code = 500, message = "Internal server error") })
-  public ResponseEntity<ApiBodyResponse<RegisterResponse>> register(@Valid @RequestBody RegisterRequest registerRequest) {
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> register(
+      @Valid @RequestBody RegisterRequest registerRequest) {
+
+    RegisterResponse registerResponse = registerService.createUser(registerRequest);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/auth/{username}")
+        .buildAndExpand(registerResponse.getUsername()).toUri();
+
+    return ResponseEntity.created(location).body(new ApiBodyResponse<>(true, "User registered successfully"));
+  }
+  
+  @PostMapping("/doctor/register")
+  @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved list"),
+      @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+      @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+      @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+      @ApiResponse(code = 500, message = "Internal server error") })
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> registerDoctor(
+      @Valid @RequestBody RegisterRequest registerRequest) {
+
+    RegisterResponse registerResponse = registerService.createDoctor(registerRequest);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/auth/{username}")
+        .buildAndExpand(registerResponse.getUsername()).toUri();
+
+    return ResponseEntity.created(location).body(new ApiBodyResponse<>(true, "User registered successfully"));
+  }
+
+    @PostMapping("/doctor/register-with-email-confirmation")
+  @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved list"),
+      @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+      @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+      @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+      @ApiResponse(code = 500, message = "Internal server error") })
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> confirmDoctorsEmail (
+      @Valid @RequestBody RegisterRequest registerRequest) {
+
+    log.info(registerRequest.getEmail());
+
+    RegisterResponse registerResponse = registerService.processDoctorsEmailConfirmation(registerRequest);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/auth/{username}")
+        .buildAndExpand(registerResponse.getUsername()).toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiBodyResponse<>(true, "A verification link has been sent to " + registerResponse.getEmail()));
+  }
+  
+  @GetMapping("/confirm-email-create-doctor")
+  @ApiOperation(value = "This will confirm the users email", notes = "No implementation notes.")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list"),
+          @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+          @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+          @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+          @ApiResponse(code = 500, message = "Internal server error")
+  })
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> createDoctor(@RequestParam("token") String token) {
+    RegisterResponse registerResponse = registerService.createDoctor(token);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/doctors/{username}")
+        .buildAndExpand(registerResponse.getUsername()).toUri();
+    
+    return ResponseEntity.created(location)
+        .body(new ApiBodyResponse<>(true, "Doctor created successfully"));  
+  }
+  
+  @PostMapping("/patient/register")
+  @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved list"),
+      @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+      @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+      @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+      @ApiResponse(code = 500, message = "Internal server error") })
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> registerPatient(
+      @Valid @RequestBody RegisterRequest registerRequest) {
+
+    RegisterResponse registerResponse = registerService.createPatient(registerRequest);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/auth/{username}")
+        .buildAndExpand(registerResponse.getUsername()).toUri();
+
+    return ResponseEntity.created(location).body(new ApiBodyResponse<>(true, "User registered successfully"));
+  }
+  
+  @PostMapping("/patient/register-with-email-confirmation")
+  @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved list"),
+      @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+      @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+      @ApiResponse(code = 404, message = "Requested Resource Not Found"),
+      @ApiResponse(code = 500, message = "Internal server error") })
+  public ResponseEntity<ApiBodyResponse<RegisterResponse>> registerPatientWithEmailConfirmation(@Valid @RequestBody RegisterRequest registerRequest) {
 
     RegisterResponse registerResponse = registerService.createUser(registerRequest);
 

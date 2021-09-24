@@ -1,13 +1,16 @@
 package com.devdezyn.mollysclub.user;
 
-import java.util.Collection;
-import java.util.ArrayList;
+import java.util.Set;
 
-import lombok.Data;
+import com.devdezyn.mollysclub.role.RoleDto;
 
-import com.devdezyn.mollysclub.role.Role;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Builder
 public class UserDto {
   private Long id;
   private String firstName;
@@ -15,7 +18,7 @@ public class UserDto {
   private String username;
   private String email;
   private String password;
-  private Collection<Role> roles = new ArrayList<>();
+  private Set<RoleDto> roles;
   private Boolean locked;
   private Boolean enabled;
   private Boolean credentialExpired;

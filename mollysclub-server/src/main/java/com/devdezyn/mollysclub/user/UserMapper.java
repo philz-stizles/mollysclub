@@ -1,5 +1,7 @@
 package com.devdezyn.mollysclub.user;
 
+import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +23,7 @@ public class UserMapper {
     public User toEntity(UserDto dto) {
         if (dto == null)
             return null;
-        
+
         User entity = new User();
         entity.setId(dto.getId());
         entity.setFirstName(dto.getFirstName());
@@ -30,5 +32,18 @@ public class UserMapper {
         entity.setEmail(dto.getEmail());
 
         return entity;
+    }
+    
+    public User fromRequestToEntity(RegisterRequest request) {
+        if (request == null)
+            return null;
+
+        return User.builder()
+            .username(request.getUsername())
+            .email(request.getEmail())
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
+            .password(request.getPassword())
+                .build();
     }
 }

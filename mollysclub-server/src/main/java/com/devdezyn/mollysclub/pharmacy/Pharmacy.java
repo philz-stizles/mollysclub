@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "Pharmacy")
 @Table(
-        name = "pharmacy",
+        name = "pharmacies",
         uniqueConstraints = {
                 @UniqueConstraint(name = "pharmacy_name_unique", columnNames = "name")
         })
@@ -39,12 +39,12 @@ public class Pharmacy {
     private String logo;
     private String bio;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<Address>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Location> locations = new ArrayList<Location>();
 
     @OneToOne(cascade = CascadeType.ALL)
-        private User account;
+        private User user;
 }
