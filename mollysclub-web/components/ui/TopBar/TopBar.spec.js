@@ -1,8 +1,17 @@
-// import { shallow } from 'enzyme'
-// import TopBar from './TopBar'
-// import SidebarMenuTitle from './../SidebarMenuTitle/SidebarMenuTitle'
-// import SidebarMenuItem from '../SidebarMenuItem/SidebarMenuItem'
-// import { checkProps } from '../../../../../tests/testUtils'
+import { shallow } from 'enzyme'
+import TopBar from './TopBar'
+
+describe('<TopBar />', () => {
+  let wrapper
+
+  beforeEach(() => {
+    wrapper = shallow(<TopBar />)
+  })
+
+  it('should render without crashing', () => {
+    expect(wrapper).toBeTruthy()
+  })
+})
 
 // describe('<TopBar />', () => {
 //   let wrapper

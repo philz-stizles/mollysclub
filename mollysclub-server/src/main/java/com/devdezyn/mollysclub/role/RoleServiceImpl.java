@@ -118,4 +118,9 @@ public class RoleServiceImpl implements RoleService {
       throw new RuntimeException("Role does not exist");
     }
   }
+
+  // @Override
+  // public RoleDto getRolesByNames(List<String> names) {
+  //   return roleRepository.findAllByName(names);
+  // }
 }

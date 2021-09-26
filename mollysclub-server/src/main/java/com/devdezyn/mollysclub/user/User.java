@@ -1,7 +1,4 @@
 package com.devdezyn.mollysclub.user;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +11,9 @@ import javax.validation.constraints.Size;
 import lombok.*;
 
 import com.devdezyn.mollysclub.address.Address;
+import com.devdezyn.mollysclub.db_docs.DBFile;
 import com.devdezyn.mollysclub.role.Role;
-import com.devdezyn.mollysclub.shared.models.BaseEntity;
+import com.devdezyn.mollysclub.shared.models.DateAudit;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.NaturalId;
@@ -23,7 +21,9 @@ import org.hibernate.annotations.NaturalId;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
+@Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
@@ -33,7 +33,11 @@ import org.hibernate.annotations.NaturalId;
             "email"
         })
 })
-public class User extends BaseEntity {
+public class User extends DateAudit {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+    
   @Column(name = "first_name")
   private String firstName;
 
@@ -65,38 +69,23 @@ public class User extends BaseEntity {
   @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private Set<Role> roles = new HashSet<>();
+  private Set<Role> roles;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Address> addresses = new ArrayList<Address>();
+  private List<Address> addresses;
+
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private DBFile  avatar;
   
   @Column(columnDefinition = "tinyint(1) default true")
   private Boolean locked;
 
-   @Column(columnDefinition = "tinyint(1) default false")
-   private Boolean enabled;
+  @Column(columnDefinition = "tinyint(1) default false")
+  private Boolean enabled;
   
   @Column(name = "credential_expired", columnDefinition = "tinyint(1) default false")
   private Boolean credentialExpired;
 
   @Column(name = "account_expired", columnDefinition = "tinyint(1) default false")
   private Boolean accountExpired;
-
-  @Builder
-  public User(Long id, String firstName, String lastName, String username, String name, String email, String telephone, String password, Set<Role> roles, List<Address> addresses, Boolean locked, Boolean enabled, Boolean credentialExpired, Boolean accountExpired) {
-    super(id);
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.username = username;
-    this.name = name;
-    this.email = email;
-    this.telephone = telephone;
-    this.password = password;
-    this.roles = roles;
-    this.addresses = addresses;
-    this.locked = locked;
-    this.enabled = enabled;
-    this.credentialExpired = credentialExpired;
-    this.accountExpired = accountExpired;
-  }
 }

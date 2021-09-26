@@ -1,6 +1,7 @@
 package com.devdezyn.mollysclub.auth.services;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
 import com.devdezyn.mollysclub.auth.dtos.RegisterResponse;
@@ -45,7 +46,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     //Create User and retrieve email email confirmation token
-    var user = userService.saveUser(request);
+    var user = userService.saveUser(request, Arrays.asList("DOCTOR"));
 
     // 
     String token = confirmationTokenService.saveConfirmationToken(user);
@@ -74,7 +75,7 @@ public class RegistrationServiceImpl implements RegistrationService {
   public RegisterResponse createDoctor(RegisterRequest request) {
     
     // Save user credentials
-    User createdUser = userService.saveUser(request);
+    User createdUser = userService.saveUser(request, Arrays.asList("DOCTOR"));
 
     doctorService.create(createdUser);
 
@@ -85,7 +86,7 @@ public class RegistrationServiceImpl implements RegistrationService {
   public RegisterResponse processDoctorsEmailConfirmation(RegisterRequest request) {
     log.info(request.toString());
     // Save user credentials
-    User user = userService.saveUser(request);
+    User user = userService.saveUser(request, Arrays.asList("DOCTOR"));
 
     String token = confirmationTokenService.saveConfirmationToken(user);
 

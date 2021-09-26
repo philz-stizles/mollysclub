@@ -1,5 +1,7 @@
 package com.devdezyn.mollysclub.user;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import com.devdezyn.mollysclub.role.Role;
 import com.devdezyn.mollysclub.role.RoleDto;
 import com.devdezyn.mollysclub.role.RoleMapper;
 import com.devdezyn.mollysclub.role.RoleRepository;
+import com.devdezyn.mollysclub.role.RoleService;
 import com.devdezyn.mollysclub.shared.exceptions.BadRequestException;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
   private final static String USER_NOT_FOUND_MSG = "user with %s %s not found";
 
+  private final RoleService roleService;
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final AddressRepository addressRepository;
@@ -76,7 +80,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User saveUser(RegisterRequest registerRequest) {
+  public User saveUser(RegisterRequest registerRequest, List<String> roles) {
     if (userRepository.existsByUsername(registerRequest.getUsername())) {
       throw new BadRequestException("Username is already taken!");
     }
@@ -84,12 +88,15 @@ public class UserServiceImpl implements UserService {
     if (userRepository.existsByEmail(registerRequest.getEmail())) {
       throw new BadRequestException("Email Address already in use!");
     }
-    log.info("Saving new user {} to the database", registerRequest.getUsername());
 
-    // Creating user's account
+    // Creating new user.
     User newUser = userMapper.fromRequestToEntity(registerRequest);
 
+    // Assign roles to new user.
+    List<Role> existingRoles = roleRepository.findByNameIn(roles);
+
     newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+    newUser.setRoles(new HashSet<>(existingRoles));
     newUser.setEnabled(true);
     var savedUser = userRepository.save(newUser);
 

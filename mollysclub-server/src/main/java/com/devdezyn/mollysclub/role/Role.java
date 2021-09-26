@@ -7,6 +7,8 @@ import javax.persistence.*;
 
 import com.devdezyn.mollysclub.permission.Permission;
 import com.devdezyn.mollysclub.shared.models.BaseEntity;
+import com.devdezyn.mollysclub.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.*;
 
@@ -32,8 +34,12 @@ public class Role extends BaseEntity {
         @JoinTable(name = "role_permissions",
                 joinColumns = @JoinColumn(name = "role_id"),
                 inverseJoinColumns = @JoinColumn(name = "permission_id"))
-        private Set<Permission> permissions = new HashSet<>();
+    private Set<Permission> permissions = new HashSet<>();
 
+    @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
+    private Set<User> users;
+    
     @Builder
     public Role(Long id, String name, String description, Boolean isActive, Set<Permission> permissions) {
             super(id);

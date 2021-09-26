@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.devdezyn.mollysclub.AbstractTest;
-import com.devdezyn.mollysclub.auth.dtos.LoginDto;
+import com.devdezyn.mollysclub.auth.dtos.LoginRequest;
 import com.devdezyn.mollysclub.auth.dtos.RegisterRequest;
 import com.devdezyn.mollysclub.auth.dtos.RegisterResponse;
 import com.devdezyn.mollysclub.auth.services.RegistrationService;
@@ -130,7 +130,7 @@ public class AuthControllerIT extends AbstractTest {
     
     @Test
     public void login_fails_with_bad_username() throws Exception {
-      LoginDto loginDto = LoginDto.builder().password("mockPassword").build();
+      LoginRequest loginDto = LoginRequest.builder().password("mockPassword").build();
 
       MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post(BASE_URI + "/login")
           .content(mapToJson(loginDto))
@@ -144,7 +144,7 @@ public class AuthControllerIT extends AbstractTest {
     
     @Test
     public void login_fails_with_bad_password() throws Exception {
-      LoginDto loginDto = LoginDto.builder()
+      LoginRequest loginDto = LoginRequest.builder()
           .usernameOrEmail("mockUsername")
           .build();
 

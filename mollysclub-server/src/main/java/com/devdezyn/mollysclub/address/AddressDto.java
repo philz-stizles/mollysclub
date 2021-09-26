@@ -1,5 +1,7 @@
 package com.devdezyn.mollysclub.address;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -9,7 +11,10 @@ import lombok.*;
 @Builder
 public class AddressDto {
   private Long id;
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long locationId;
+  
   private String zip;
   private String street;
   private String city;

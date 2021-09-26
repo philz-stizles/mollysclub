@@ -12,7 +12,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
-import com.devdezyn.mollysclub.shared.ApiBodyResponse;
+import com.devdezyn.mollysclub.shared.ApiResponseBody;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class AppointmentController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<ApiBodyResponse<?>> createAppointment(@RequestBody @Valid AppointmentDto appointmentDto) {
+  public ResponseEntity<ApiResponseBody<?>> createAppointment(@RequestBody @Valid AppointmentDto appointmentDto) {
 
     // Create appointment
     AppointmentDto dto = appointmentService.create(appointmentDto);

@@ -1,13 +1,11 @@
 package com.devdezyn.mollysclub.auth.dtos;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@AllArgsConstructor
+@Builder
 public class AuthResponseDto {
-    private String accessToken;
-    private String tokenType = "Bearer";
-
-    public AuthResponseDto(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    private Boolean status;
+    private String message;
+    private LoggedInUser data;
 }

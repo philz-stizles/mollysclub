@@ -5,11 +5,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import com.devdezyn.mollysclub.address.AddressDto;
 import com.devdezyn.mollysclub.auth.models.UserPrincipal;
@@ -17,6 +19,8 @@ import com.devdezyn.mollysclub.auth.security.CurrentUser;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,11 +72,13 @@ public class UserController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<AddressDto> createAddress(
-      @CurrentUser UserPrincipal currentUser, 
-      @RequestBody @Valid AddressDto addressDto
-  ) {
-    var createdAddress = userService.createAddress(currentUser, addressDto);
+  public ResponseEntity<AddressDto> createAddress(@RequestBody @Valid AddressDto addressDto) {
+    // Retrieve current user.
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserPrincipal currentUser = (UserPrincipal) auth.getPrincipal();
+
+    // Create address.
+    AddressDto createdAddress = userService.createAddress(currentUser, addressDto);
 
     return ResponseEntity.ok().body(createdAddress);
   }
@@ -103,8 +109,8 @@ public class UserController {
           @ApiResponse(code = 500, message = "Internal server error")
   })
   public ResponseEntity<AddressDto> updateAddress(
-      @CurrentUser UserPrincipal currentUser, 
-      @PathVariable Long id, @RequestBody AddressDto addressDto
+      @ApiIgnore @CurrentUser UserPrincipal currentUser, 
+      @PathVariable @NotBlank Long id, @RequestBody AddressDto addressDto
   ) {
 
     var address = userService.updateAddress(currentUser, id, addressDto);

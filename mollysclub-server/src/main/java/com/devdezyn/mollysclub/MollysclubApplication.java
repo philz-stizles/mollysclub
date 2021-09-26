@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling
+@EnableScheduling // Used to key into spring boots scheduling and cron jobs
 public class MollysclubApplication {
 
 	public static void main(String[] args) {

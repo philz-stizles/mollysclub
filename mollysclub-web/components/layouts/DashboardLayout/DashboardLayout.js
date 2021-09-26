@@ -97,7 +97,9 @@ const DashboardLayout = ({ children }) => {
         <style jsx>
           {`
             main {
+              padding: 2rem 2rem;
               flex: 4 1;
+              // background-color: #f5f8fa;
             }
           `}
         </style>

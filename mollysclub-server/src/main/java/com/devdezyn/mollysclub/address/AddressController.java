@@ -4,13 +4,16 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.devdezyn.mollysclub.shared.ApiBodyResponse;
+import com.devdezyn.mollysclub.shared.ApiResponseBody;
 import com.devdezyn.mollysclub.shared.payloads.PagedResponse;
 import com.devdezyn.mollysclub.shared.utils.AppConstants;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "Addresses")
 @RestController
 @RequestMapping(path = "/api/v1/addresses")
+@Secured("ROLE_ADMIN")
 @RequiredArgsConstructor
 public class AddressController {
   private final AddressService addressService;
@@ -37,11 +41,11 @@ public class AddressController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<ApiBodyResponse<List<AddressDto>>> getAllAddresses() {
+  public ResponseEntity<ApiResponseBody<List<AddressDto>>> getAllAddresses() {
     List<AddressDto> addressDtos = addressService.findAll();
     String message = (addressDtos.size() <= 0) ? "No records found" : "Retrieved successfully";
 
-    return ResponseEntity.ok().body(new ApiBodyResponse<>(true, message, addressDtos));
+    return ResponseEntity.ok().body(new ApiResponseBody<>(true, message, addressDtos));
   }
 
   @GetMapping(path = "/filtered")
@@ -62,8 +66,8 @@ public class AddressController {
     return ResponseEntity.ok().body(pagedDtos);
   }
   
-
   @GetMapping(path = "/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   @ApiOperation(value = "This will retrieve a list of categories", notes = "No implementation notes.")
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successfully retrieved list"),
@@ -72,11 +76,10 @@ public class AddressController {
           @ApiResponse(code = 404, message = "Requested Resource Not Found"),
           @ApiResponse(code = 500, message = "Internal server error")
   })
-  public ResponseEntity<ApiBodyResponse<List<AddressDto>>> getAddress(@PathVariable @Valid Long id) {
+  public ResponseEntity<ApiResponseBody<List<AddressDto>>> getAddress(@PathVariable @Valid Long id) {
     List<AddressDto> addressDtos = addressService.findAll();
     String message = (addressDtos.size() <= 0) ? "No records found" : "Retrieved successfully";
 
-    return ResponseEntity.ok().body(new ApiBodyResponse<>(true, message, addressDtos));
+    return ResponseEntity.ok().body(new ApiResponseBody<>(true, message, addressDtos));
   }
-
 }

@@ -7,6 +7,8 @@ public interface RoleService {
 
   RoleDto getById(Long id);
 
+  // RoleDto getRolesByNames(List<String> names);
+
   RoleDto getByName(String email);
   RoleDto searchByDescription(String email);
 

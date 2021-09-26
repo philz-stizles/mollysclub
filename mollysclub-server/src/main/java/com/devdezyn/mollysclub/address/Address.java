@@ -1,9 +1,13 @@
 package com.devdezyn.mollysclub.address;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.devdezyn.mollysclub.shared.models.BaseEntity;
+import com.devdezyn.mollysclub.shared.models.UserDateAudit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,23 +19,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "addresses")
-public class Address extends BaseEntity {
+public class Address extends UserDateAudit {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String zip;
   private String street;
   private String city;
   private String state;
   private String country;
-
-  @Builder
-  public Address(Long id, String zip, String street, String city, String state, String country) {
-    super(id);
-    this.zip = zip;
-    this.street = street;
-    this.city = city;
-    this.state = state;
-    this.country = country;
-  }
-
 }

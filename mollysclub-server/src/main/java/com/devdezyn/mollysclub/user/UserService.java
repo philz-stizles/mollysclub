@@ -25,7 +25,7 @@ public interface UserService extends UserDetailsService {
   AddressDto updateAddress(UserPrincipal currentUserPrincipal, Long id, AddressDto addressDto);
   void deleteAddress(UserPrincipal currentUserPrincipal, Long id);
 
-  User saveUser(RegisterRequest registerRequest);
+  User saveUser(RegisterRequest registerRequest, List<String> roles);
 
   RoleDto saveRole(RoleDto role);
 

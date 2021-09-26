@@ -1,11 +1,14 @@
 package com.devdezyn.mollysclub.bootstrap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.devdezyn.mollysclub.permission.Permission;
 import com.devdezyn.mollysclub.permission.PermissionRepository;
@@ -34,10 +37,10 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
       // Seed permissions.
-      seedPermissions();
+      List<Permission> permissions = seedPermissions();
 
       // Seed roles.
-      seedRoles();
+      seedRoles(permissions);
 
       // Seed users.
       seedUsers();
@@ -45,42 +48,81 @@ public class DataLoader implements CommandLineRunner {
 
     }
 
-    private void seedPermissions() {
-      Map<String, List<String>> permissions = new HashMap<>();
-      permissions.put("doctor", Arrays.asList("create", "read", "update", "delete", "write"));
-      permissions.put("patient", Arrays.asList("create", "read", "update", "delete", "write"));
-
+    private List<Permission> seedPermissions() {
       if (permissionRepository.findAll().isEmpty()) {
+        Map<String, List<String>> permissions = new HashMap<>();
+        permissions.put("doctor", Arrays.asList("create", "read", "update", "delete", "write"));
+        permissions.put("patient", Arrays.asList("create", "read", "update", "delete", "write"));
+        Collection<Permission> permissionsCollection = new ArrayList<>();
         // Create permissions
         log.info("Creating permissions...");
 
         permissions.forEach((k, v) -> {
           v.forEach(p -> {
-            permissionRepository
-              .save(
+            permissionsCollection.add(
                   Permission.builder()
                       .name(String.format("%s:%s.", k, p))
-                        .description(String.format("User can execute %s actions on %s.", p, k))
+                      .description(String.format("User can execute %s actions on %s.", p, k))
                       .build()
               );
           });
         });
 
+        List<Permission> createdPermissions = permissionRepository.saveAll(permissionsCollection);
+
         log.info("Permissions have been created Successfully...");
+        return createdPermissions;
       } else {
         log.info("Permissions have already been created Successfully...");
+        return permissionRepository.findAll();
       }
     }
 
-    private void seedRoles() {
+    private void seedRoles(List<Permission> permissions) {
       if (roleRepository.findAll().isEmpty()) {
         // Create roles
         log.info("Creating roles...");
 
-        roleRepository.save(Role.builder().name("ADMIN").description("Global roles").build());
-        roleRepository.save(Role.builder().name("DOCTOR").description("Global roles").build());
-        roleRepository.save(Role.builder().name("PATIENT").description("Global roles").build());
+        var adminRole = Role.builder()
+          .name("ADMIN")
+          .description("Global roles")
+          .isActive(true)
+          .permissions(new HashSet<>(permissions))
+          .build();
 
+        var doctorRole = Role.builder()
+          .name("DOCTOR")
+          .description("Global roles")
+            .isActive(true)
+          .permissions(
+            new HashSet<>(
+                permissions
+                  .stream()
+                  .filter(p -> {
+                    return p.getName().contains("doctor");
+                        })
+                  .collect(Collectors.toList())
+            )
+          )
+          .build();
+          
+        var patientRole = Role.builder()
+          .name("PATIENT")
+          .description("Global roles")
+            .isActive(true)
+          .permissions(
+            new HashSet<>(
+                permissions
+                  .stream()
+                  .filter(p -> {
+                    return p.getName().contains("patient");
+                        })
+                  .collect(Collectors.toList())
+            )
+          )
+          .build();
+
+        roleRepository.saveAll(Arrays.asList(adminRole, doctorRole, patientRole));
         log.info("Roles have been created Successfully...");
       } else {
         log.info("Roles have already been created Successfully...");

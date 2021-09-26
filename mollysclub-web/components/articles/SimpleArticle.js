@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import HTMLRenderer from 'react-html-renderer'
-import Button from '../ui/Button/Button'
+import Button from '../ui/Buttons/Button/Button'
 import styles from './SimpleArticle.module.scss'
 
 const SimpleArticle = ({ title, subTitle, text, btnText, list }) => {
